@@ -281,6 +281,15 @@
         <activity android:name=".provisioning.local.StackProvisioning" />
         <activity android:name=".provisioning.local.ServiceProvisioning" />
         <activity android:name=".provisioning.local.LoggerProvisioning" />
+        
+   		<!-- Revocator -->			
+   		<activity android:name=".revocator.Main"
+   		    android:icon="@drawable/revocator" android:label="Revocator">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
