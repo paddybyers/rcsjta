@@ -22,16 +22,17 @@
 
 package com.gsma.rcs.provider.settings;
 
-import javax2.sip.ListeningPoint;
+import com.gsma.rcs.utils.logger.Logger;
+import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMethod;
+import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMode;
+import com.gsma.services.rcs.filetransfer.FileTransferServiceConfiguration.ImageResizeOption;
+
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.SparseArray;
 
-import com.gsma.rcs.utils.logger.Logger;
-import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMethod;
-import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMode;
-import com.gsma.services.rcs.filetransfer.FileTransferServiceConfiguration.ImageResizeOption;
+import javax2.sip.ListeningPoint;
 
 /**
  * RCS settings data constants
@@ -83,6 +84,41 @@ public class RcsSettingsData {
         DIGEST
     };
 
+    /**
+     * Security extension policy
+     */
+    public enum ExtensionPolicy {
+        ONLY_MNO(0), MNO_THIRD_PARTTY(1);
+
+        private int mValue;
+
+        private static SparseArray<ExtensionPolicy> mValueToEnum = new SparseArray<ExtensionPolicy>();
+        static {
+            for (ExtensionPolicy entry : ExtensionPolicy.values()) {
+                mValueToEnum.put(entry.toInt(), entry);
+            }
+        }
+
+        private ExtensionPolicy(int value) {
+            mValue = value;
+        }
+
+        public final int toInt() {
+            return mValue;
+        }
+
+        public static ExtensionPolicy valueOf(int value) {
+            ExtensionPolicy entry = mValueToEnum.get(value);
+            if (entry != null) {
+                return entry;
+            }
+            throw new IllegalArgumentException("No enum const class "
+                    + ExtensionPolicy.class.getName() + "." + value);
+
+        }
+
+    };
+    
     /**
      * Option for what ux-operation to react on when handling manual acceptance of one2one and group
      * chat invitations.
@@ -966,12 +1002,6 @@ public class RcsSettingsData {
     /* package private */static final Boolean DEFAULT_CAPABILITY_GC_SF = false;
 
     /**
-     * RCS extensions capability
-     */
-    public static final String CAPABILITY_RCS_EXTENSIONS = "CapabilityRcsExtensions";
-    /* package private */static final String DEFAULT_CAPABILITY_RCS_EXTENSIONS = "";
-
-    /**
      * Instant messaging is always on (Store & Forward server)
      */
     public static final String IM_CAPABILITY_ALWAYS_ON = "ImAlwaysOn";
@@ -1214,6 +1244,13 @@ public class RcsSettingsData {
     public static final String MAX_MSRP_SIZE_EXTENSIONS = "ExtensionsMaxMsrpSize";
     /* package private */static final Integer DEFAULT_MAX_MSRP_SIZE_EXTENSIONS = 0;
 
+    /**
+     * RCS extensions policy
+     */
+    public static final String EXTENSIONS_POLICY = "ExtensionsPolicy";
+    /* package private */static final Integer DEFAULT_EXTENSIONS_POLICY = ExtensionPolicy.ONLY_MNO
+            .toInt();
+    
     /**
      * Validity of the RCS configuration.
      */

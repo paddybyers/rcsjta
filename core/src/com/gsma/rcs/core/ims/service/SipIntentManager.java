@@ -96,7 +96,8 @@ public class SipIntentManager {
         if (intent != null) {
             String mime = formatIntentMimeType(featureTag);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.setType(mime.toLowerCase());
+            // Third party extensions are case sensitives
+            intent.setType(mime);
         }
 
         return intent;

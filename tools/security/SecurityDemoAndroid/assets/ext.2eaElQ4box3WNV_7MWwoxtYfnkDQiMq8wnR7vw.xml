@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iari-authorization xmlns="http://gsma.com/ns/iari-authorization#">
+<iari Id="iari">urn:urn-7:3gpp-application.ims.iari.rcs.ext.2eaElQ4box3WNV_7MWwoxtYfnkDQiMq8wnR7vw</iari>
+<package-name Id="package-name">com.gsma.iariauth.sample</package-name>
+<package-signer Id="package-signer">35:14:ED:5A:0A:60:B5:62:B6:F3:04:3C:5C:18:A3:E1:F0:37:2E:73</package-signer>
+<ds:Signature Id="Signature" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#iari">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>oijVc3+v8dfIh1vZKmMF32NtUI5mL6vBnTZ2aya+XOk=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#package-name">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>a/1gfzVBYCbOgh8guXdAruhkRSCeq5FXhtSJESgiJ48=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#package-signer">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>+fLChA2HQs+wXitT0079Gu3kK7/e96x3XbLuKUAteVg=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#prop">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>JnsMKd5+r1svR8lsNuEvmTHEbR2XRWv7qYl7mvPYs+I=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+FBf7Fplr4fNJPycp2Ov3RBfEgNFHGUSI/OIz9Whnua5u+NHFy6dLPEQQQ/7RNzVCb1cPd/p1uwDX
+Nc6MEZWJG/xALDHnjWS1AeSsWs54/2PHqxwo4ooAjPdzrrUSaJbwJE8ZzNjW1OXXScJeX+Zk1jNc
+gLopDz9hGpWOEne9Ef+quGPlleKYzCRWZmX0i2UOzR0FmxveXFC9aJ54LtLI8o3YgEOsAgX7q0Ek
+e9LeMHJ5yVlUNC6hHNRlw+KfnMrw87xfJh/ZnzLEMq9PjfkQ4z56xai6Vw5ujulk2oLKZ4JShBVC
+Ff2Nfor3OWAyrC/RA8nrYn9VZBgiD6l7JgtxQg==
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIDPTCCAiWgAwIBAgIEX/DGhTANBgkqhkiG9w0BAQsFADAfMR0wGwYDVQQDExRpYXJpLnN0YW5k
+YWxvbmUudGVzdDAeFw0xNTAyMjcxNTAwMjBaFw0xNjAyMjIxNTAwMjBaMB8xHTAbBgNVBAMTFGlh
+cmkuc3RhbmRhbG9uZS50ZXN0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiAnpXbFj
+vlRvwS19WJ8tlELBPNseuFSKFLblitUnQsgnMpumGrKywe4SiklKuTG3n3/aU/jePEA6dwNS4yl0
+b4FngI2+QliRaBt3iXoMF/Zd4FAdHDR31cHY1tvq6gXeSNn8tuWellP2Pzb33yVDzREHAg/awTV8
+I5t7MAryi477yJMaFwziAu1xOy1Hvaqc0v5oKvcOk+duO26zKYu0G8FULQVFHBA7Ee9v64S0h1I9
+kbuSaZFb4mCL77/bVAO7hCq+10HDCzTkRlQBmhaw8eVAfYwDnmkeP7Z7Uq8a09r4i2FnfcoLGF8R
+/mZngVGt1B/MPLwOVIwiWU4WloX6pwIDAQABo4GAMH4wXQYDVR0RBFYwVIZSdXJuOnVybi03OjNn
+cHAtYXBwbGljYXRpb24uaW1zLmlhcmkucmNzLmV4dC4yZWFFbFE0Ym94M1dOVl83TVd3b3h0WWZu
+a0RRaU1xOHduUjd2dzAdBgNVHQ4EFgQUXtmUBphG0VoX+Ym25KxqsU9dL0gwDQYJKoZIhvcNAQEL
+BQADggEBAGL/Z+HenCbKIRiT+M0lmf2uMzNb5Y058qw8xQ/phtfjye+XxD7e1jqcUdkcuWhSwFLj
+oAsTrmzU4X/F+7iH4pnkqBdj7YdC+TbparFzvQMLMYXcieICRq04S9Y2L5EvV8U9Wiz+r1P+7IFI
+gIPyeIoSzDC5vVIF3JdVp2YqzdE2pQeOtvz2u/jmlgb39IohO/bnBfoGpnt7LEDCnSmh89KmPEkF
+cAzeR3syhmPm0YvOzSdlS1BKaBcjkMz5YHmU6ZYhdfpFEq3pO7oe/6LbGra7mXuQPVojkmRZGoXH
+MhlWhwUNJkmHxEs1qXE2Ew16EjGSvJEIA462ukKwZT5JNFI=
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object Id="prop"><ds:SignatureProperties xmlns:dsp="http://www.w3.org/2009/xmldsig-properties">
+<ds:SignatureProperty Id="profile" Target="#Signature"><dsp:Profile URI="http://gsma.com/ns/iari-authorization#profile"/></ds:SignatureProperty>
+<ds:SignatureProperty Id="role" Target="#Signature"><dsp:Role URI="http://gsma.com/ns/iari-authorization#role-iari-owner"/></ds:SignatureProperty>
+<ds:SignatureProperty Id="identifier" Target="#Signature"><dsp:Identifier>urn:urn-7:3gpp-application.ims.iari.rcs.ext.2eaElQ4box3WNV_7MWwoxtYfnkDQiMq8wnR7vw:2015-02-27T04:00:22Z</dsp:Identifier></ds:SignatureProperty>
+<ds:SignatureProperty Id="created" Target="#Signature"><dsp:Created>2015-02-27T04:00:22Z</dsp:Created></ds:SignatureProperty>
+</ds:SignatureProperties></ds:Object>
+</ds:Signature>
+</iari-authorization>

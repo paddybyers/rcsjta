@@ -42,6 +42,9 @@ import com.gsma.services.rcs.filetransfer.FileTransferLog;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Abstract IMS file transfer session
  * 
@@ -79,6 +82,7 @@ public abstract class ImsFileSharingSession extends FileSharingSession {
             MmContent fileIcon, String filetransferId, RcsSettings rcsSettings, long timestamp) {
         super(parent, content, contact, PhoneUtils.formatContactIdToUri(contact), fileIcon,
                 filetransferId, rcsSettings, timestamp);
+        setFeatureTags(Arrays.asList(InstantMessagingService.FT_FEATURE_TAGS));
     }
 
     @Override
@@ -128,12 +132,11 @@ public abstract class ImsFileSharingSession extends FileSharingSession {
     public SipRequest createInvite() throws SipException {
         SipRequest invite;
         if (getFileicon() != null) {
-            invite = SipMessageFactory.createMultipartInvite(getDialogPath(),
-                    InstantMessagingService.FT_FEATURE_TAGS, getDialogPath().getLocalContent(),
-                    BOUNDARY_TAG);
+            invite = SipMessageFactory.createMultipartInvite(getDialogPath(), getFeatureTags(),
+                    getDialogPath().getLocalContent(), BOUNDARY_TAG);
         } else {
-            invite = SipMessageFactory.createInvite(getDialogPath(),
-                    InstantMessagingService.FT_FEATURE_TAGS, getDialogPath().getLocalContent());
+            invite = SipMessageFactory.createInvite(getDialogPath(), getFeatureTags(),
+                    getDialogPath().getLocalContent());
         }
 
         // Add a contribution ID header

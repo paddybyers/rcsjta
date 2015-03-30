@@ -24,6 +24,7 @@ package com.gsma.rcs.service.api;
 
 import com.gsma.rcs.core.ims.protocol.sip.SipDialogPath;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.richcall.ContentSharingError;
 import com.gsma.rcs.core.ims.service.richcall.RichcallService;
 import com.gsma.rcs.core.ims.service.richcall.geoloc.GeolocSharingPersistedStorageAccessor;
@@ -39,6 +40,8 @@ import com.gsma.services.rcs.contact.ContactId;
 import com.gsma.services.rcs.sharing.geoloc.GeolocSharing.ReasonCode;
 import com.gsma.services.rcs.sharing.geoloc.GeolocSharing.State;
 import com.gsma.services.rcs.sharing.geoloc.IGeolocSharing;
+
+import android.os.Binder;
 
 import javax2.sip.message.Response;
 
@@ -67,7 +70,7 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
     /**
      * The logger
      */
-    private final static Logger logger = Logger.getLogger(GeolocSharingImpl.class.getSimpleName());
+    private final static Logger sLogger = Logger.getLogger(GeolocSharingImpl.class.getSimpleName());
 
     /**
      * Constructor
@@ -187,8 +190,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * Accepts geoloc sharing invitation
      */
     public void acceptInvitation() {
-        if (logger.isActivated()) {
-            logger.info("Accept session invitation");
+        if (sLogger.isActivated()) {
+            sLogger.info("Accept session invitation");
         }
         final GeolocTransferSession session = mRichcallService.getGeolocTransferSession(mSharingId);
         if (session == null) {
@@ -198,10 +201,11 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
             throw new IllegalStateException("Session with sharing ID '" + mSharingId
                     + "' not available.");
         }
+        final Integer callingUid = Binder.getCallingUid();
         // Accept invitation
         new Thread() {
             public void run() {
-                session.acceptSession();
+                session.acceptSession(callingUid);
             }
         }.start();
     }
@@ -210,8 +214,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * Rejects geoloc sharing invitation
      */
     public void rejectInvitation() {
-        if (logger.isActivated()) {
-            logger.info("Reject session invitation");
+        if (sLogger.isActivated()) {
+            sLogger.info("Reject session invitation");
         }
         final GeolocTransferSession session = mRichcallService.getGeolocTransferSession(mSharingId);
         if (session == null) {
@@ -233,8 +237,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * Aborts the sharing
      */
     public void abortSharing() {
-        if (logger.isActivated()) {
-            logger.info("Cancel session");
+        if (sLogger.isActivated()) {
+            sLogger.info("Cancel session");
         }
         final GeolocTransferSession session = mRichcallService.getGeolocTransferSession(mSharingId);
         if (session == null) {
@@ -291,8 +295,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
     }
 
     private void handleSessionRejected(ReasonCode reasonCode, ContactId contact) {
-        if (logger.isActivated()) {
-            logger.info("Session rejected; reasonCode=" + reasonCode + ".");
+        if (sLogger.isActivated()) {
+            sLogger.info("Session rejected; reasonCode=" + reasonCode + ".");
         }
         synchronized (lock) {
             mGeolocSharingService.removeGeolocSharing(mSharingId);
@@ -304,8 +308,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * Session is started
      */
     public void handleSessionStarted(ContactId contact) {
-        if (logger.isActivated()) {
-            logger.info("Session started.");
+        if (sLogger.isActivated()) {
+            sLogger.info("Session started.");
         }
         synchronized (lock) {
             setStateAndReasonCodeAndBroadcast(contact, State.STARTED, ReasonCode.UNSPECIFIED);
@@ -319,8 +323,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * @param reason Termination reason
      */
     public void handleSessionAborted(ContactId contact, TerminationReason reason) {
-        if (logger.isActivated()) {
-            logger.info(new StringBuilder("Session aborted; reason=").append(reason).append(".")
+        if (sLogger.isActivated()) {
+            sLogger.info(new StringBuilder("Session aborted; reason=").append(reason).append(".")
                     .toString());
         }
         synchronized (lock) {
@@ -351,8 +355,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * Session has been terminated by remote
      */
     public void handleSessionTerminatedByRemote(ContactId contact) {
-        if (logger.isActivated()) {
-            logger.info("Session terminated by remote");
+        if (sLogger.isActivated()) {
+            sLogger.info("Session terminated by remote");
         }
         synchronized (lock) {
             mGeolocSharingService.removeGeolocSharing(mSharingId);
@@ -375,8 +379,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * @param error Error
      */
     public void handleSharingError(ContactId contact, ContentSharingError error) {
-        if (logger.isActivated()) {
-            logger.info(new StringBuilder("Sharing error ").append(error.getErrorCode())
+        if (sLogger.isActivated()) {
+            sLogger.info(new StringBuilder("Sharing error ").append(error.getErrorCode())
                     .append(".").toString());
         }
         GeolocSharingStateAndReasonCode stateAndReasonCode = toStateAndReasonCode(error);
@@ -396,8 +400,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
      * @param initiatedByRemote
      */
     public void handleContentTransfered(ContactId contact, Geoloc geoloc, boolean initiatedByRemote) {
-        if (logger.isActivated()) {
-            logger.info("Geoloc transferred.");
+        if (sLogger.isActivated()) {
+            sLogger.info("Geoloc transferred.");
         }
         synchronized (lock) {
             mGeolocSharingService.removeGeolocSharing(mSharingId);
@@ -413,8 +417,8 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
 
     @Override
     public void handleSessionAccepted(ContactId contact) {
-        if (logger.isActivated()) {
-            logger.info("Accepting sharing.");
+        if (sLogger.isActivated()) {
+            sLogger.info("Accepting sharing.");
         }
         synchronized (lock) {
             setStateAndReasonCodeAndBroadcast(contact, State.ACCEPTING, ReasonCode.UNSPECIFIED);
@@ -453,5 +457,19 @@ public class GeolocSharingImpl extends IGeolocSharing.Stub implements GeolocTran
         synchronized (lock) {
             setStateAndReasonCodeAndBroadcast(contact, State.RINGING, ReasonCode.UNSPECIFIED);
         }
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

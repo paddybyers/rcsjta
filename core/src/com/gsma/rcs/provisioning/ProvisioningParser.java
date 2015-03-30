@@ -24,10 +24,12 @@ package com.gsma.rcs.provisioning;
 
 import static com.gsma.rcs.utils.StringUtils.UTF8;
 
+import com.gsma.rcs.core.ims.service.extension.ICertificateProvisioningListener;
 import com.gsma.rcs.provider.settings.RcsSettings;
 import com.gsma.rcs.provider.settings.RcsSettingsData;
 import com.gsma.rcs.provider.settings.RcsSettingsData.AuthenticationProcedure;
 import com.gsma.rcs.provider.settings.RcsSettingsData.EnableRcseSwitch;
+import com.gsma.rcs.provider.settings.RcsSettingsData.ExtensionPolicy;
 import com.gsma.rcs.provider.settings.RcsSettingsData.FileTransferProtocol;
 import com.gsma.rcs.provider.settings.RcsSettingsData.GsmaRelease;
 import com.gsma.rcs.utils.DeviceUtils;
@@ -80,6 +82,8 @@ public class ProvisioningParser {
 
     private boolean mFirst = false;
 
+    private ICertificateProvisioningListener mICertificateProvisioning;
+    
     /**
      * The logger
      */
@@ -104,10 +108,12 @@ public class ProvisioningParser {
      * 
      * @param content Content
      * @param rcsSettings
+     * @param certificateProvisioning 
      */
-    public ProvisioningParser(String content, RcsSettings rcsSettings) {
+    public ProvisioningParser(String content, RcsSettings rcsSettings,  ICertificateProvisioningListener certificateProvisioning) {
         mContent = content;
         mRcsSettings = rcsSettings;
+        mICertificateProvisioning = certificateProvisioning;        
     }
 
     /**
@@ -242,6 +248,9 @@ public class ProvisioningParser {
                 // In that case we restore the relevant GSMA release saved before parsing.
                 mRcsSettings.setGsmaRelease(release);
             }
+            if (mICertificateProvisioning != null) {
+                mICertificateProvisioning.stop();
+            }            
             return true;
         } catch (Exception e) {
             if (logActivated) {
@@ -1200,6 +1209,212 @@ public class ProvisioningParser {
     }
 
     /**
+     * Parse IARI X509 certificates
+     *
+     * @param iari IARI range
+     * @param node Node
+     * @param index Index
+     */
+    private boolean parseIariX509Certificates(String iari, Node node, int index) {
+        boolean found = false;
+        String cert = null;
+        if (node == null) {
+            return false;
+        }
+        if (logger.isActivated()) {
+            logger.debug("Parse X509 Certificates");
+        }
+        Node childnode = node.getFirstChild();
+        if (childnode != null) {
+            do {
+                if (cert == null) {
+                    if ((cert = getValueByParamName("X509Certificate" + index, childnode, TYPE_TXT)) != null) {
+                        found = true;
+                        if (mICertificateProvisioning != null) {
+                            mICertificateProvisioning.addNewCertificate(iari, cert);
+                        }
+                        continue;
+                    }
+                }
+            } while ((childnode = childnode.getNextSibling()) != null);
+        }
+        return found;
+    }
+  
+    /**
+     * Parse IARI authorization
+     *
+     * @param node Node
+     */
+    private void parseIariAuthorization(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        String iariRange = null;
+        Node childnode = node.getFirstChild();
+        if (childnode != null) {
+            do {
+                if (childnode.getNodeName().equals("characteristic")) {
+                    if (childnode.getAttributes().getLength() > 0) {
+                        Node typenode = childnode.getAttributes().getNamedItem("type");
+                        if (typenode != null) {
+                            if (typenode.getNodeValue().startsWith("X509Certificates")) {
+                                int i = 1;
+                                boolean found = true;
+                                while (found) {
+                                    found = parseIariX509Certificates(iariRange, childnode, i);
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (iariRange == null) {
+                    if ((iariRange = getValueByParamName("iariRange", childnode, TYPE_TXT)) != null) {
+                        continue;
+                    }
+                }
+
+            } while ((childnode = childnode.getNextSibling()) != null);
+        }
+    }    
+    
+    /**
+     * Parse IARI authorizations
+     *
+     * @param node Node
+     */
+    private void parseIariRangeAuthorizations(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        Node childnode = node.getFirstChild();
+        if (childnode != null) {
+            do {
+                if (childnode.getNodeName().equals("characteristic")) {
+                    if (childnode.getAttributes().getLength() > 0) {
+                        Node typenode = childnode.getAttributes().getNamedItem("type");
+                        if (typenode != null) {
+                            if (typenode.getNodeValue().startsWith("iariRangeAuthorization")) {
+                                parseIariAuthorization(childnode);
+                            }
+                        }
+                    }
+                }
+            } while ((childnode = childnode.getNextSibling()) != null);
+        }
+    }
+    
+    /**
+     * Parse IARI authorizations
+     *
+     * @param node Node
+     */
+    private void parseIariRangeAuthorizationInfo(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        Node childnode = node.getFirstChild();
+        if (childnode != null) {
+            do {
+                if (childnode.getNodeName().equals("characteristic")) {
+                    if (childnode.getAttributes().getLength() > 0) {
+                        Node typenode = childnode.getAttributes().getNamedItem("type");
+                        if (typenode != null) {
+                            if (typenode.getNodeValue().equalsIgnoreCase("iariRangeAuthorizations")) {
+                                if (mICertificateProvisioning != null) {
+                                    mICertificateProvisioning.start();
+                                } else {
+                                    if (logger.isActivated()) {
+                                        logger.warn("Cannot parse X509 certificate: no provisiong listener");
+                                    }
+                                }
+
+                                // Parse new IARI authorizations
+                                parseIariRangeAuthorizations(childnode);
+                            }
+                        }
+                    }
+                }
+            } while ((childnode = childnode.getNextSibling()) != null);
+        }
+    }
+    
+    /**
+     * Parse API ext
+     *
+     * @param node Node
+     */
+    private void parseAPIExt(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        String extensionsPolicy = null;
+        Node childnode = node.getFirstChild();
+        if (childnode != null) {
+            do {
+                if (childnode.getNodeName().equals("characteristic")) {
+                    if (childnode.getAttributes().getLength() > 0) {
+                        Node typenode = childnode.getAttributes().getNamedItem("type");
+                        if (typenode != null) {
+                            if (typenode.getNodeValue().equalsIgnoreCase("iariAuthorizationInfo")) {
+                                parseIariRangeAuthorizationInfo(childnode);
+                            }
+                        }
+                    }
+                }
+
+                if (extensionsPolicy == null) {
+                    if ((extensionsPolicy = getValueByParamName("extensionsPolicy", childnode,
+                            TYPE_TXT)) != null) {
+                        try {
+                            ExtensionPolicy extensionPolicy = ExtensionPolicy.valueOf(Integer
+                                    .parseInt(extensionsPolicy));
+                            mRcsSettings.setExtensionspolicy(extensionPolicy);
+                        } catch (IllegalArgumentException e) {
+                            if (logger.isActivated()) {
+                                logger.warn("Cannot parse extension policy ".concat(e.getMessage()));
+                            }
+                        }
+                        continue;
+                    }
+                }
+            } while ((childnode = childnode.getNextSibling()) != null);
+        }
+    }
+   
+    /**
+     * Parse other ext
+     *
+     * @param node Node
+     */
+    private void parseOtherExt(Node node) {
+        if (node == null) {
+            return;
+        }
+        Node childnode = node.getFirstChild();
+        if (childnode != null) {
+            do {
+                if (childnode.getNodeName().equals("characteristic")) {
+                    if (childnode.getAttributes().getLength() > 0) {
+                        Node typenode = childnode.getAttributes().getNamedItem("type");
+                        if (typenode != null) {
+                            if (typenode.getNodeValue().equalsIgnoreCase("APIExt")) {
+                                parseAPIExt(childnode);
+                            }
+                        }
+                    }
+                }
+            } while ((childnode = childnode.getNextSibling()) != null);
+        }
+    }
+    
+    /**
      * Parse transport protocol
      * 
      * @param node Node
@@ -1310,6 +1525,8 @@ public class ProvisioningParser {
                         if (typenode != null) {
                             if (typenode.getNodeValue().equalsIgnoreCase("transportProto")) {
                                 parseTransportProtocol(childnode);
+                            } else if (typenode.getNodeValue().equalsIgnoreCase("Ext")) {
+                                parseOtherExt(childnode);
                             }
                         }
                     }

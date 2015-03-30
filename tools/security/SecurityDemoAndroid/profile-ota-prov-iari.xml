@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<wap-provisioningdoc version="1.1">
+	<characteristic type="VERS">
+		<parm name="version" value="1" />
+		<parm name="validity" value="604800" />
+	</characteristic>
+	<characteristic type="TOKEN">
+		<parm name="token" value="__s__RCS_TOKEN__e__" />
+		<parm name="validity" value="604800" />
+	</characteristic>
+	<characteristic type="MSG">
+		<parm name="title" value="ORANGE Labs Lannion - Blackbird" />
+		<parm name="message" value="JOYN ON ORANGE SPANISH test bed with simulator for DM server and IM AS blackbird" />
+		<parm name="Accept_btn" value="1" />
+		<parm name="Reject_btn" value="0" />
+	</characteristic>
+	<characteristic type="APPLICATION">
+		<parm name="AppID" value="ap2001" />
+		<parm name="Name" value="IMS Settings" />
+		<parm name="AppRef" value="IMS-Settings" />
+		<characteristic type="ConRefs">
+			<parm name="ConRef" value="ftrdwispc.vp" />
+		</characteristic>
+		<parm name="PDP_ContextOperPref" value="0" />
+		<parm name="Timer_T1" value="2000" />
+		<parm name="Timer_T2" value="16000" />
+		<parm name="Timer_T4" value="17000" />
+		<parm name="Private_User_Identity" value="+__s__MSISDN__e__@rcs.lannion-e.com" />
+		<characteristic type="Public_user_identity_List">
+			<parm name="Public_user_Identity" value="sip:+__s__MSISDN__e__@rcs.lannion-e.com" />
+		</characteristic>
+		<parm name="Home_network_domain_name" value="rcs.lannion-e.com" />
+		<characteristic type="Ext">
+			<parm name="NatUrlFmt" value="0" />
+			<parm name="IntUrlFmt" value="0" />
+			<parm name="Q-Value" value="0.5" />
+			<parm name="MaxSizeImageShare" value="15360000" />
+			<parm name="MaxTimeVideoShare" value="3600" />
+			<characteristic type="SecondaryDevicePar">
+				<parm name="VoiceCall" value="0" />
+				<parm name="Chat" value="0" />
+				<parm name="SendSms" value="0" />
+				<parm name="SendMms" value="0" />
+				<parm name="FileTransfer" value="0" />
+				<parm name="VideoShare" value="0" />
+				<parm name="ImageShare" value="0" />
+				<parm name="VideoCall" value="0" />
+				<parm name="GeoLocPush" value="0" />
+			</characteristic>
+		</characteristic>
+		<characteristic type="ICSI_List">
+			<parm name="ICSI" value="0" />
+			<parm name="ICSI_Resource_Allocation_Mode" value="0" />
+		</characteristic>
+		<characteristic type="LBO_P-CSCF_Address">
+			<parm name="Address" value="rcs.lannion-e.com" />
+			<parm name="AddressType" value="FQDN" />
+		</characteristic>
+		<parm name="Keep_Alive_Enabled" value="1" />
+		<parm name="RegRetryBaseTime" value="30" />
+		<parm name="RegRetryMaxTime" value="1800" />
+		<characteristic type="PhoneContext_List">
+			<parm name="PhoneContext" value="rcs.lannion-e.com" />
+			<parm name="Public_user_identity" value="tel:+__s__MSISDN__e__" />
+		</characteristic>
+		<characteristic type="APPAUTH">
+			<parm name="AuthType" value="Digest" />
+			<parm name="Realm" value="sip.mobistar.com" />
+			<parm name="UserName" value="+__s__MSISDN__e__@rcs.lannion-e.com" />
+			<parm name="UserPwd" value="imt30imt30" />
+		</characteristic>
+	</characteristic>
+	<characteristic type="APPLICATION">
+		<parm name="AppID" value="ap2002" />
+		<parm name="Name" value="RCSe-Settings" />
+		<parm name="AppRef" value="RCSe-Settings" />
+		<characteristic type="IMS">
+			<parm name="To-AppRef" value="IMS-Settings" />
+		</characteristic>
+		<characteristic type="SERVICES">
+			<parm name="presencePrfl" value="0" />
+			<parm name="ChatAuth" value="1" />
+			<parm name="ftAuth" value="1" />
+			<parm name="standaloneMsgAuth" value="0" />
+			<parm name="geolocPullAuth" value="0" />
+			<parm name="geolocPushAuth" value="1" />
+			<parm name="vsAuth" value="1" />
+			<parm name="isAuth" value="1" />
+			<parm name="beIPVoiceCallAuth" value="3" />
+			<parm name="beIPVideoCallAuth" value="3" />
+		</characteristic>
+		<characteristic type="PRESENCE">
+			<parm name="AvailabilityAuth" value="0" />
+			<characteristic type="FAVLINK">
+				<parm name="AutMa" value="Auto" />
+				<parm name="LabelMaxLength" value="0" />
+			</characteristic>
+			<parm name="IconMaxSize" value="0" />
+			<parm name="NoteMaxSize" value="0" />
+			<characteristic type="VIPCONTACTS">
+				<parm name="NonVipPollPeriodSetting" value="0" />
+				<parm name="NonVipMaxPollPerPeriod" value="0" />
+			</characteristic>
+			<parm name="PublishTimer" value="0" />
+			<parm name="NickNameLength" value="0" />
+			<characteristic type="Location">
+				<parm name="TextMaxLength" value="0" />
+				<parm name="LocInfoMaxValidTime" value="0" />
+			</characteristic>
+			<parm name="client-obj-datalimit" value="0" />
+			<parm name="source-throttle-publish" value="0" />
+			<parm name="max-number-of-subscriptions-in-presence-list" value="0" />
+		</characteristic>
+		<characteristic type="XDMS">
+			<parm name="RevokeTimer" value="0" />
+			<parm name="enableXDMSSubscribe" value="0" />
+			<parm name="XCAPRootURI" value="test" />
+			<parm name="XCAPAuthenticationUserName" value="test" />
+			<parm name="XCAPAuthenticationSecret" value="test" />
+			<parm name="XCAPAuthenticationType" value="Digest" />
+		</characteristic>
+		<characteristic type="SUPL">
+			<parm name="TextMaxLength" value="100" />
+			<parm name="LocInfoMaxValidTime" value="0" />
+			<parm name="Addr" value="test" />
+		</characteristic>
+		<characteristic type="IM">
+			<parm name="imMsgTech" value="0" />
+			<parm name="imCapAlwaysON" value="1" />
+			<parm name="GroupChatFullStandFwd" value="0" />
+			<parm name="GroupChatOnlyFStandFwd" value="0" />
+			<parm name="imWarnSF" value="0" />
+			<parm name="SmsFallBackAuth" value="0" />
+			<parm name="imCapNonRCS" value="0" />
+			<parm name="imWarnIW" value="0" />
+			<parm name="AutAccept" value="0" />
+			<parm name="imSessionStart" value="0" />
+			<parm name="AutAcceptGroupChat" value="1" />
+			<parm name="firstMessageInvite" value="1" />
+			<parm name="TimerIdle" value="300" />
+			<parm name="MaxConcurrentSession" value="0" />
+			<parm name="multiMediaChat" value="0" />
+			<parm name="MaxSize1to1" value="699" />
+			<parm name="MaxSize1toM" value="2000" />
+			<parm name="ftWarnSize" value="10240" />
+			<parm name="MaxSizeFileTr" value="15360" />
+			<parm name="ftThumb" value="0" />
+			<parm name="ftStAndFwEnabled" value="0" />
+			<parm name="ftCapAlwaysON" value="0" />
+			<parm name="ftAutAccept" value="1" />
+			<parm name="ftHTTPCSURI" value="https://ftcontentserver.rcs.mnc001.mcc208.pub.3gppnetwork.org/rcse-hcs/upload" />
+			<parm name="ftHTTPCSUser" value="+__s__MSISDN__e__@rcs.lannion-e.com" />
+			<parm name="ftHTTPCSPwd" value="imt30imt30" />
+			<parm name="ftDefaultMech" value="HTTP" />
+			<parm name="pres-srv-cap" value="0" />
+			<parm name="deferred-msg-func-uri" value="sip" />
+			<parm name="max_adhoc_group_size" value="20" />
+			<parm name="conf-fcty-uri" value="sip:Conference-Factory@rcs.lannion-e.com" />
+			<parm name="exploder-uri" value="sip:rcse-standfw@rcs.lannion-e.com" />
+			<parm name="conv-hist-func-uri" value="sip" />
+			<parm name="delete-uri" value="sip" />
+		</characteristic>
+		<characteristic type="CPM">
+			<characteristic type="StandaloneMsg">
+				<parm name="MaxSizeStandalone" value="0" />
+			</characteristic>
+			<characteristic type="MessageStore">
+				<parm name="AuthProt" value="1" />
+			</characteristic>
+		</characteristic>
+		<characteristic type="CAPDISCOVERY">
+			<parm name="pollingPeriod" value="604800" />
+			<parm name="pollingRate" value="0" />
+			<parm name="pollingRatePeriod" value="0" />
+			<parm name="capInfoExpiry" value="86400" />
+			<parm name="defaultDisc" value="0" />
+			<characteristic type="Ext">
+				<characteristic type="joyn">
+					<parm name="msgCapValidity" value="5" />
+				</characteristic>
+			</characteristic>
+		</characteristic>
+		<characteristic type="APN">
+			<parm name="rcseOnlyAPN" value="ftrdwispc.vp" />
+			<parm name="enableRcseSwitch" value="1" />
+		</characteristic>
+		<characteristic type="OTHER">
+			<parm name="endUserConfReqId" value="endUserConfReq@rcs.lannion-e.com" />
+			<parm name="allowVSSave" value="0" />
+			<characteristic type="transportProto">
+				<parm name="psSignalling" value="SIPoUDP" />
+				<parm name="psMedia" value="MSRP" />
+				<parm name="psRTMedia" value="RTP" />
+				<parm name="wifiSignalling" value="SIPoTCP" />
+				<parm name="wifiMedia" value="MSRP" />
+				<parm name="wifiRTMedia" value="RTP" />
+			</characteristic>
+			<parm name="beIPCallBreakOut" value="0" />
+			<parm name="beIPCallBreakOutCS" value="0" />
+			<parm name="beIPVideoCallUpgradeFromCS" value="0" />
+			<parm name="beIPVideoCallUpgradeOnCapError" value="0" />
+			<parm name="beIPVideoCallUpgradeAttemptEarly" value="0" />
+			<characteristic type="Ext">
+				<characteristic type="APIExt">
+					<parm name="extensionsPolicy" value="1" />
+					<characteristic type="iariAuthorizationInfo">
+						<characteristic type="iariRangeAuthorizations">
+							<characteristic type="iariRangeAuthorization1">
+								<parm name="iariRange"
+									value="urn:urn-7:3gpp-application.ims.iari.rcs.mnc099.mcc099.*" />
+								<characteristic type="X509Certificates">
+									<parm name="X509Certificate1"
+										value="MIIDEzCCAfugAwIBAgIECOuLtzANBgkqhkiG9w0BAQsFADAYMRYwFAYDVQQDEw1t
+Y2MwOTkubW5jMDk5MB4XDTE1MDIyNzE0MzAzOVoXDTE2MDIyMjE0MzAzOVowGDEW
+MBQGA1UEAxMNbWNjMDk5Lm1uYzA5OTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAOPlQ7fMrirSzh+rFYUtGJhl6X10fzsmjN6tEzaOB/wpO6f/P8WgcLCQ
+WCVL+M21Qttn3w0gNw0z5S4mkmV4G59Kzbq7xwrufjSMcPgARSkH31OpozuKfyXv
+EjKOwWjCL5JfJxRv+ZUNByLQ5aTluQC3crXrdppNUy4lwg8WoXz/va2RYyf+QqMy
+rTbL2d9V+9Zk0FtpmdliNV2Ce5DjQxfkh3epW0qywC74l0gv8K/ZAEmJkvCc6Za0
+mlyJBJq56dXZRW8RgK3L+z7WyufwPmiEGfBJnsiuh+RsHFZ04flDLGO3ilQaX5gr
+lxFKeM9KiDFgQJeOTS9i+IoNNRvcC0sCAwEAAaNlMGMwQgYDVR0RBDswOYY3dXJu
+OnVybi03OjNncHAtYXBwbGljYXRpb24uaW1zLmlhcmkucmNzLm1uYzA5OS5tY2Mw
+OTkuKjAdBgNVHQ4EFgQUAxmygJjPiWtunDLb19VhFQb5lrQwDQYJKoZIhvcNAQEL
+BQADggEBAK1EyWrHy7mo1qHVa27EJBsRypZrThfbjnG0+nkpAo/iH7NHyhkY0sC3
+N1Xj5d+efFovxVrLe4vd9PVYfDrGK6+Y9F4zU+JcpHCtNdu96aW1a3V5wO1rkYot
+1JLV/IAMzKsTAVF3WCcXRz46Z1C5b6Fg3E5ui+lBCTF+JEkDe/0zoVVkHmuZOLqT
+n4BX6sHVwPFXX9g+mkGlbVUIyItqJvy3FEqmxibVB3JLdzelpSba6BOwyH8aMqJr
+qMMLdBYdtbp6/J9ms8tU6NvIcjCT1OsruXseaIet4FMW9Ad+Ud+Tn5I/cbZEpOfp
+2I/HHYItV0tYNaMlfv2KvzxaUoGfBXQ=" />
+								</characteristic>
+							</characteristic>
+						</characteristic>
+					</characteristic>
+				</characteristic>
+			</characteristic>
+		</characteristic>					
+		<characteristic type="SERVICEPROVIDEREXT">
+			<characteristic type="joyn">
+				<characteristic type="UX">
+					<parm name="e2eVoiceCapabilityHandling" value="0" />
+					<parm name="messagingUX" value="0" />
+					<parm name="oneButtonVideoCall" value="0" />
+				</characteristic>
+				<characteristic type="Messaging">
+					<parm name="deliveryTimeout" value="0" />
+					<parm name="ftHTTPCapAlwaysOn" value="0" />
+				</characteristic>
+			</characteristic>
+		</characteristic>
+	</characteristic>
+</wap-provisioningdoc>

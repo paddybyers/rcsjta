@@ -25,6 +25,7 @@ package com.gsma.rcs.service.api;
 import com.gsma.rcs.core.content.MmContent;
 import com.gsma.rcs.core.ims.protocol.sip.SipDialogPath;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.richcall.ContentSharingError;
 import com.gsma.rcs.core.ims.service.richcall.RichcallService;
 import com.gsma.rcs.core.ims.service.richcall.image.ImageSharingPersistedStorageAccessor;
@@ -41,6 +42,7 @@ import com.gsma.services.rcs.sharing.image.ImageSharing.ReasonCode;
 import com.gsma.services.rcs.sharing.image.ImageSharing.State;
 
 import android.net.Uri;
+import android.os.Binder;
 
 import javax2.sip.message.Response;
 
@@ -292,9 +294,10 @@ public class ImageSharingImpl extends IImageSharing.Stub implements ImageTransfe
                     + "' not available.");
         }
         // Accept invitation
+        final Integer callingUid = Binder.getCallingUid();
         new Thread() {
             public void run() {
-                session.acceptSession();
+                session.acceptSession(callingUid);
             }
         }.start();
     }
@@ -517,5 +520,19 @@ public class ImageSharingImpl extends IImageSharing.Stub implements ImageTransfe
             setStateAndReasonCodeAndBroadcast(contact, ImageSharing.State.RINGING,
                     ReasonCode.UNSPECIFIED);
         }
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

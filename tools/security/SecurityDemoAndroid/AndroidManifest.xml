@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gsma.iariauth.sample"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/rcs_icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.gsma.services.rcs.capability.EXTENSION"
+            android:value="mnc099.mcc099.messaging-range-ext0;mnc099.mcc099.messaging-range-ext0-error;mnc099.mcc099.messaging-range-ext1;mnc099.mcc099.messaging-range-ext1-error;ext.2eaElQ4box3WNV_7MWwoxtYfnkDQiMq8wnR7vw" />
+
+        <activity android:name="MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Declare the joyn extension -->
+            <intent-filter>
+                <action android:name="com.gsma.services.rcs.capability.EXTENSION" />
+                <data android:mimeType="com.gsma.services.rcs/iari.range.test" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

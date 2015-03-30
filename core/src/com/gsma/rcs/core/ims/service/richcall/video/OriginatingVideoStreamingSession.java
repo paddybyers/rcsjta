@@ -102,7 +102,7 @@ public class OriginatingVideoStreamingSession extends VideoStreamingSession {
                 sLogger.info("Send INVITE");
             }
             SipRequest invite = SipMessageFactory.createInvite(dialogPath,
-                    RichcallService.FEATURE_TAGS_VIDEO_SHARE, sdp);
+                    getFeatureTags(), sdp);
 
             // Set the Authorization header
             getAuthenticationAgent().setAuthorizationHeader(invite);

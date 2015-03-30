@@ -28,10 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 
 import com.gsma.rcs.core.content.ContentManager;
 import com.gsma.rcs.core.content.MmContent;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.im.InstantMessagingService;
 import com.gsma.rcs.core.ims.service.upload.FileUploadSession;
 import com.gsma.rcs.platform.file.FileDescription;
@@ -64,7 +66,7 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
     /**
      * The logger
      */
-    private static final Logger logger = Logger.getLogger(FileUploadServiceImpl.class
+    private static final Logger sLogger = Logger.getLogger(FileUploadServiceImpl.class
             .getSimpleName());
 
     /**
@@ -81,8 +83,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @param rcsSettings
      */
     public FileUploadServiceImpl(InstantMessagingService imService, RcsSettings rcsSettings) {
-        if (logger.isActivated()) {
-            logger.info("File upload service API is loaded");
+        if (sLogger.isActivated()) {
+            sLogger.info("File upload service API is loaded");
         }
         mImService = imService;
         mRcsSettings = rcsSettings;
@@ -94,8 +96,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
     public void close() {
         mFileUploadCache.clear();
 
-        if (logger.isActivated()) {
-            logger.info("File upload service API is closed");
+        if (sLogger.isActivated()) {
+            sLogger.info("File upload service API is closed");
         }
     }
 
@@ -105,8 +107,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @param filUpload File upload
      */
     protected void addFileUpload(FileUploadImpl filUpload) {
-        if (logger.isActivated()) {
-            logger.debug("Add a file upload in the list (size=" + mFileUploadCache.size() + ")");
+        if (sLogger.isActivated()) {
+            sLogger.debug("Add a file upload in the list (size=" + mFileUploadCache.size() + ")");
         }
 
         mFileUploadCache.put(filUpload.getUploadId(), filUpload);
@@ -118,8 +120,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @param uploadId Upload ID
      */
     protected void removeFileUpload(String sessionId) {
-        if (logger.isActivated()) {
-            logger.debug("Remove a file upload from the list (size=" + mFileUploadCache.size()
+        if (sLogger.isActivated()) {
+            sLogger.debug("Remove a file upload from the list (size=" + mFileUploadCache.size()
                     + ")");
         }
 
@@ -145,8 +147,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @throws ServerApiException
      */
     public IFileUpload uploadFile(Uri file, boolean fileicon) throws ServerApiException {
-        if (logger.isActivated()) {
-            logger.info("Initiate a file upload session (thumbnail option " + fileicon + ")");
+        if (sLogger.isActivated()) {
+            sLogger.info("Initiate a file upload session (thumbnail option " + fileicon + ")");
         }
 
         // Test IMS connection
@@ -175,8 +177,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
 
         } catch (Exception e) {
             // TODO:Handle Security exception in CR037
-            if (logger.isActivated()) {
-                logger.error("Unexpected error", e);
+            if (sLogger.isActivated()) {
+                sLogger.error("Unexpected error", e);
             }
             throw new ServerApiException(e.getMessage());
         }
@@ -190,14 +192,14 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      */
     public boolean canUploadFile() throws ServerApiException {
         if (!ServerApiUtils.isImsConnected()) {
-            if (logger.isActivated()) {
-                logger.debug("Cannot upload file now as IMS is not connected.");
+            if (sLogger.isActivated()) {
+                sLogger.debug("Cannot upload file now as IMS is not connected.");
             }
             return false;
         }
         if (!mImService.isFileTransferSessionAvailable()) {
-            if (logger.isActivated()) {
-                logger.debug("Cannot upload file now as no sessions available.");
+            if (sLogger.isActivated()) {
+                sLogger.debug("Cannot upload file now as no sessions available.");
             }
             return false;
         }
@@ -211,8 +213,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @throws ServerApiException
      */
     public List<IBinder> getFileUploads() throws ServerApiException {
-        if (logger.isActivated()) {
-            logger.info("Get file upload sessions");
+        if (sLogger.isActivated()) {
+            sLogger.info("Get file upload sessions");
         }
 
         try {
@@ -223,8 +225,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
             return fileUploads;
 
         } catch (Exception e) {
-            if (logger.isActivated()) {
-                logger.error("Unexpected error", e);
+            if (sLogger.isActivated()) {
+                sLogger.error("Unexpected error", e);
             }
             throw new ServerApiException(e.getMessage());
         }
@@ -238,8 +240,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @throws ServerApiException
      */
     public IFileUpload getFileUpload(String uploadId) throws ServerApiException {
-        if (logger.isActivated()) {
-            logger.info("Get file upload " + uploadId);
+        if (sLogger.isActivated()) {
+            sLogger.info("Get file upload " + uploadId);
         }
 
         IFileUpload fileUpload = mFileUploadCache.get(uploadId);
@@ -255,8 +257,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @param listener Listener
      */
     public void addEventListener(IFileUploadListener listener) {
-        if (logger.isActivated()) {
-            logger.info("Add a file upload event listener");
+        if (sLogger.isActivated()) {
+            sLogger.info("Add a file upload event listener");
         }
         synchronized (lock) {
             mBroadcaster.addEventListener(listener);
@@ -269,8 +271,8 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      * @param listener Listener
      */
     public void removeEventListener(IFileUploadListener listener) {
-        if (logger.isActivated()) {
-            logger.info("Remove a file upload event listener");
+        if (sLogger.isActivated()) {
+            sLogger.info("Remove a file upload event listener");
         }
         synchronized (lock) {
             mBroadcaster.removeEventListener(listener);
@@ -295,5 +297,19 @@ public class FileUploadServiceImpl extends IFileUploadService.Stub {
      */
     public ICommonServiceConfiguration getCommonConfiguration() {
         return new CommonServiceConfigurationImpl(mRcsSettings);
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

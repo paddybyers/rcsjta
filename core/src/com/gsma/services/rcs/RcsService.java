@@ -43,6 +43,11 @@ public abstract class RcsService {
      */
     public static final String ACTION_SERVICE_PROVISIONING_DATA_CHANGED = "com.gsma.services.rcs.action.SERVICE_PROVISIONNING_DATA_CHANGED";
 
+    /**
+     * Intent broadcasted to discover applicationId
+     */
+    public final static String METADATA_APPLICATION_ID = "com.gsma.services.rcs.APPLICATION_ID";
+    
     private static final String ERROR_CNX = "Service not connected";
 
     protected final RcsServiceControl mRcsServiceControl;

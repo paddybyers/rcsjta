@@ -29,7 +29,7 @@ import com.gsma.rcs.core.ims.service.ContactInfo.BlockingState;
 import com.gsma.rcs.core.ims.service.ContactInfo.RcsStatus;
 import com.gsma.rcs.core.ims.service.ContactInfo.RegistrationState;
 import com.gsma.rcs.core.ims.service.capability.Capabilities;
-import com.gsma.rcs.core.ims.service.extension.ServiceExtensionManager;
+import com.gsma.rcs.core.ims.service.extension.ExtensionManager;
 import com.gsma.rcs.core.ims.service.presence.FavoriteLink;
 import com.gsma.rcs.core.ims.service.presence.Geoloc;
 import com.gsma.rcs.core.ims.service.presence.PhotoIcon;
@@ -525,7 +525,7 @@ public final class ContactsManager {
 
         // Save the capabilities extensions
         values.put(RichAddressBookData.KEY_CAPABILITY_EXTENSIONS,
-                ServiceExtensionManager.getExtensions(newCapabilities.getSupportedExtensions()));
+                ExtensionManager.getExtensions(newCapabilities.getSupportedExtensions()));
 
         // Save capabilities timestamp
         values.put(RichAddressBookData.KEY_CAPABILITY_TIME_LAST_RQST,
@@ -923,7 +923,7 @@ public final class ContactsManager {
 
                     // Set RCS extensions capability
                     capabilities
-                            .setSupportedExtensions(ServiceExtensionManager.getExtensions(cursor.getString(cursor
+                            .setSupportedExtensions(ExtensionManager.getExtensions(cursor.getString(cursor
                                     .getColumnIndexOrThrow(RichAddressBookData.KEY_CAPABILITY_EXTENSIONS))));
 
                     // Set time of last request
@@ -1549,7 +1549,7 @@ public final class ContactsManager {
                                 String.valueOf(rawContactId), MIMETYPE_CAPABILITY_EXTENSIONS,
                                 contact.toString()
                         })
-                .withValue(Data.DATA2, ServiceExtensionManager.getExtensions(newExtensions))
+                .withValue(Data.DATA2, ExtensionManager.getExtensions(newExtensions))
                 .build());
         return ops;
     }
@@ -1959,7 +1959,7 @@ public final class ContactsManager {
         caps.setGroupChatStoreForwardSupport(supported);
         values.put(RichAddressBookData.KEY_CAPABILITY_GROUP_CHAT_SF, supported);
 
-        String extensions = ServiceExtensionManager.getExtensions(caps.getSupportedExtensions());
+        String extensions = ExtensionManager.getExtensions(caps.getSupportedExtensions());
         // Save the capabilities extensions
         values.put(RichAddressBookData.KEY_CAPABILITY_EXTENSIONS, extensions);
 
@@ -2101,7 +2101,7 @@ public final class ContactsManager {
             caps.setSipAutomata(isCapabilitySupported(cursor, RichAddressBookData.KEY_AUTOMATA));
 
             // Set RCS extensions capability
-            caps.setSupportedExtensions(ServiceExtensionManager.getExtensions(cursor
+            caps.setSupportedExtensions(ExtensionManager.getExtensions(cursor
                     .getString(cursor
                             .getColumnIndexOrThrow(RichAddressBookData.KEY_CAPABILITY_EXTENSIONS))));
 
@@ -2234,7 +2234,7 @@ public final class ContactsManager {
                     .withValueBackReference(Data.RAW_CONTACT_ID, rawContactRefIms)
                     .withValue(Data.MIMETYPE, MIMETYPE_CAPABILITY_EXTENSIONS)
                     .withValue(Data.DATA1, info.getContact().toString())
-                    .withValue(Data.DATA2, ServiceExtensionManager.getExtensions(exts))
+                    .withValue(Data.DATA2, ExtensionManager.getExtensions(exts))
                     .withValue(Data.DATA3, info.getContact().toString()).build());
         }
 
@@ -2847,7 +2847,7 @@ public final class ContactsManager {
                         // Set RCS extensions capability
                         int columnIndex = cursor.getColumnIndex(Data.DATA2);
                         if (columnIndex != -1) {
-                            capabilities.setSupportedExtensions(ServiceExtensionManager
+                            capabilities.setSupportedExtensions(ExtensionManager
                                     .getExtensions(cursor.getString(columnIndex)));
                         }
                     }

@@ -202,6 +202,8 @@
             android:exported="true"
             android:readPermission="com.gsma.services.rcs.RCS_READ_HISTORY"
             android:writePermission="com.gsma.rcs.permission.RCS_INTERNAL_ACCESS_ONLY"/>
+		<provider android:authorities="com.gsma.rcs.security"
+			android:name="com.gsma.rcs.provider.security.SecurityProvider"/>
 
         <!-- Device events receiver -->
 
@@ -229,16 +231,6 @@
         <receiver android:name="com.gsma.rcs.core.ims.network.gsm.OutgoingCallReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-            </intent-filter>
-        </receiver>
-
-        <!-- External capability monitoring -->
-        <receiver android:name="com.gsma.rcs.core.ims.service.capability.ExternalCapabilityMonitoring" >
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-
-                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 

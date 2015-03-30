@@ -544,9 +544,14 @@
     </string-array>
     <string-array name="mms_reason_codes">
         <item></item>
-        <item>REJECTED_BY_INACTIVITY</item>
+        <item>ABORTED_BY_USER</item>
+        <item>ABORTED_BY_REMOTE</item>
+        <item>ABORTED_BY_SYSTEM</item>
+        <item>ABORTED_BY_INACTIVITY</item>
         <item>REJECTED_BY_USER</item>
         <item>REJECTED_BY_REMOTE</item>
+        <item>REJECTED_BY_INACTIVITY</item>
+        <item>FAILED_INITIATION</item>
         <item>FAILED_SESSION</item>
         <item>FAILED_MEDIA</item>
     </string-array>

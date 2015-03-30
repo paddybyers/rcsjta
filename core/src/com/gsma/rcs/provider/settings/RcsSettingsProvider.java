@@ -228,8 +228,6 @@ public class RcsSettingsProvider extends ContentProvider {
                     RcsSettingsData.DEFAULT_CAPABILITY_GC_SF);
             addParameter(db, RcsSettingsData.CAPABILITY_FILE_TRANSFER_SF,
                     RcsSettingsData.DEFAULT_CAPABILITY_FT_SF);
-            addParameter(db, RcsSettingsData.CAPABILITY_RCS_EXTENSIONS,
-                    RcsSettingsData.DEFAULT_CAPABILITY_RCS_EXTENSIONS);
             addParameter(db, RcsSettingsData.IMS_SERVICE_POLLING_PERIOD,
                     RcsSettingsData.DEFAULT_IMS_SERVICE_POLLING_PERIOD);
             addParameter(db, RcsSettingsData.SIP_DEFAULT_PORT,
@@ -360,6 +358,8 @@ public class RcsSettingsProvider extends ContentProvider {
                     RcsSettingsData.DEFAULT_CONTROL_EXTENSIONS);
             addParameter(db, RcsSettingsData.ALLOW_EXTENSIONS,
                     RcsSettingsData.DEFAULT_ALLOW_EXTENSIONS);
+            addParameter(db, RcsSettingsData.EXTENSIONS_POLICY,
+                    RcsSettingsData.DEFAULT_EXTENSIONS_POLICY);
             addParameter(db, RcsSettingsData.MAX_MSRP_SIZE_EXTENSIONS,
                     RcsSettingsData.DEFAULT_MAX_MSRP_SIZE_EXTENSIONS);
             addParameter(db, RcsSettingsData.CONFIGURATION_VALID,

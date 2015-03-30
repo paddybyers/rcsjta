@@ -39,6 +39,8 @@ import com.gsma.services.rcs.RcsContactFormatException;
 import com.gsma.services.rcs.contact.ContactId;
 import com.gsma.services.rcs.sharing.video.IVideoPlayer;
 
+import java.util.Arrays;
+
 /**
  * Video sharing streaming session
  * 
@@ -66,9 +68,9 @@ public abstract class VideoStreamingSession extends ContentSharingSession {
      * @param rcsSettings
      * @param timestamp Local timestamp for the session
      */
-    public VideoStreamingSession(ImsService parent, MmContent content, ContactId contact,
-            RcsSettings rcsSettings, long timestamp) {
+    public VideoStreamingSession(ImsService parent, MmContent content, ContactId contact, RcsSettings rcsSettings, long timestamp) {
         super(parent, content, contact, rcsSettings, timestamp);
+        setFeatureTags(Arrays.asList(RichcallService.FEATURE_TAGS_VIDEO_SHARE));
     }
 
     /**
@@ -133,7 +135,7 @@ public abstract class VideoStreamingSession extends ContentSharingSession {
      */
     public SipRequest createInvite() throws SipException {
         return SipMessageFactory.createInvite(getDialogPath(),
-                RichcallService.FEATURE_TAGS_VIDEO_SHARE, getDialogPath().getLocalContent());
+                getFeatureTags(), getDialogPath().getLocalContent());
     }
 
     /**

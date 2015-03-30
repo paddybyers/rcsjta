@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iari-authorization xmlns="http://gsma.com/ns/iari-authorization#">
+<iari Id="iari">urn:urn-7:3gpp-application.ims.iari.rcs.mnc099.mcc099.messaging-range-ext0</iari>
+<iari-range Id="iari-range">urn:urn-7:3gpp-application.ims.iari.rcs.mnc099.mcc099.*</iari-range>
+<package-name Id="package-name">com.orangelabs.rcs.ri</package-name>
+<package-signer Id="package-signer">69:F6:78:1B:43:47:D7:B4:E4:99:97:E5:AF:A8:B6:20:F4:29:1C:84</package-signer>
+<ds:Signature Id="Signature" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#iari">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>tlGJp4r6GtSOuBWM0E5Mk6+/q5dB0bBfm1mJtWVuwFg=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#iari-range">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>JPk5LgGZD5/qIEHZvw+yf7BTcBLKJwEwJq/Tsn5wIXc=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#package-name">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>juQYCQEvSlzATLfy0z4VOuorj7cmNyPrf0e08KDA6N8=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#package-signer">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>/ON6LJ3jKh6DytOlcoVr6HXqB+OLsTU2SvJZafPq4Rg=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#prop">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>svLtwRym57RyG7tduKxc3s/Ijhyo+XgIUIk7RKxnPLk=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+d86/pQx+saBAy1zHKMIZn23H1IJbuxRWeGIu2kbA81q4+3f12UdhgTKgEmjRCIqyPfnJt8zSxCB4
+TPRpeVhUBlXlC4C7L/GyvtLrLr7Qoziqc3DqqP5GbiYn+JhyEinAWTd6Ff5Z7/YnfyniqJdjuq+F
+sSwMUwoILyZo3rjWiSmDtrg6KuDhKprw0Ri/5CjfPQTzlQD36yd82PduHHEacJttqa058EVxSH/0
+hxZEpp0VEA0uW5jwnUMddq8qe0Q913ILT2G3BzB9w+2bPYfc6c6d8gICpot/CKDcy6aXxa/sIMFs
+M4pi1yfBbFfSaO6vRxaPak9U1XHjzAQbdPS8YA==
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIDSTCCAjGgAwIBAgIJAO+o1XPPMlQbMA0GCSqGSIb3DQEBBQUAMBgxFjAUBgNVBAMTDW1jYzA5
+OS5tbmMwOTkwHhcNMTUwMzI1MTYxODIzWhcNMTYwMzI0MTYxODIzWjAaMRgwFgYDVQQDEw9pYXJp
+LnJhbmdlLnRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCK1DaAtQlEtvpp1riQ
+4u1P7ovb0QfUjzJiz3aQsD9vhvDte0ZXOt6pNUU96tzXk83v150mLUGUBLR3RhY/tyye6b5Qi/jk
+TK9uAZDyx0AAdKWlFjuqIqXV/DaszgbZoJpOtV/WuzsQtSR72NV9uC0aCZuNnXzJdXOXVRbDJde5
+hw1smS6oP8oWDssgRBnbkzg7RY/giBqJHaEgZxFhZV0hgNXaAoxeGg+onXSrIcFjbJ9i8M9tNfrJ
+u6Da5BpBcsoUbr9vgSbf12bDHsUxGi7DY/j97qwO45dt/PD4Bj3UjtBfWzyZuYHLZkaG+1rtmTVQ
+AJxCGpsL3HvHUxKHNFV7AgMBAAGjgZMwgZAwHwYDVR0jBBgwFoAU553/lnXN40UodM1LZx6xzahA
+O+AwCQYDVR0TBAIwADALBgNVHQ8EBAMCBPAwVQYDVR0RBE4wTIZKdXJuOnVybi03OjNncHAtYXBw
+bGljYXRpb24uaW1zLmlhcmkucmNzLm1uYzA5OS5tY2MwOTkubWVzc2FnaW5nLXJhbmdlLWV4dDAw
+DQYJKoZIhvcNAQEFBQADggEBAHuVW209on6LghkeUVaxvL5Hwv6O/HuHTj9QBKOfg8RYQ9MjviM5
+A5+IxOtY3FwkvrVnStWbuA8HXg58Nsl/f7AceQ2zuq4a1pIVq1skqfH1dgY6JzYvUchB1c+yfGka
+MSdvM3LdMFnv8Au8nrqjS7YXbGcH9+XjMod9ciMBUYsyGdzlGPP5rxiIF7ZD5C+7/hybb9bv01qt
+L6AdufeORRQ1pOsU2Ii834V2JeuEMMCdHpjIG1axCADRnDjJthS1Wjt6r0fdB9EtaSRLmhG+q1fp
+6nwVIWobddZuNjFomb02AC6m3ZPhNcKLNLwrGYH/YVIWAI5RpV+Zn8RLu/yO0xA=
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object Id="prop"><ds:SignatureProperties xmlns:dsp="http://www.w3.org/2009/xmldsig-properties">
+<ds:SignatureProperty Id="profile" Target="#Signature"><dsp:Profile URI="http://gsma.com/ns/iari-authorization#profile"/></ds:SignatureProperty>
+<ds:SignatureProperty Id="role" Target="#Signature"><dsp:Role URI="http://gsma.com/ns/iari-authorization#role-range-owner"/></ds:SignatureProperty>
+<ds:SignatureProperty Id="identifier" Target="#Signature"><dsp:Identifier>urn:urn-7:3gpp-application.ims.iari.rcs.mnc099.mcc099.messaging-range-ext0:2015-03-25T05:18:31Z</dsp:Identifier></ds:SignatureProperty>
+<ds:SignatureProperty Id="created" Target="#Signature"><dsp:Created>2015-03-25T05:18:31Z</dsp:Created></ds:SignatureProperty>
+</ds:SignatureProperties></ds:Object>
+</ds:Signature>
+</iari-authorization>

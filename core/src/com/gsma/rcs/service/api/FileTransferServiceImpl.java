@@ -26,6 +26,7 @@ import com.gsma.rcs.core.Core;
 import com.gsma.rcs.core.content.ContentManager;
 import com.gsma.rcs.core.content.MmContent;
 import com.gsma.rcs.core.ims.service.capability.Capabilities;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.im.InstantMessagingService;
 import com.gsma.rcs.core.ims.service.im.chat.GroupChatInfo;
 import com.gsma.rcs.core.ims.service.im.chat.GroupChatSession;
@@ -67,6 +68,7 @@ import com.gsma.services.rcs.filetransfer.IOneToOneFileTransferListener;
 
 import android.database.SQLException;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
@@ -400,6 +402,7 @@ public class FileTransferServiceImpl extends IFileTransferService.Stub {
                     FileTransfer.State.INITIATING, timestamp, timestampSent);
             final FileSharingSession session = mImService.initiateFileTransferSession(
                     fileTransferId, contact, file, fileIcon, timestamp, timestampSent);
+            session.setCallingUid(Binder.getCallingUid());
 
             OneToOneFileTransferImpl oneToOneFileTransfer = new OneToOneFileTransferImpl(
                     fileTransferId, mOneToOneFileTransferBroadcaster, mImService, storageAccessor,
@@ -788,9 +791,10 @@ public class FileTransferServiceImpl extends IFileTransferService.Stub {
                     if (sLogger.isActivated()) {
                         sLogger.debug("Group chat session is pending: auto accept it.");
                     }
+                    final Integer callingUid = Binder.getCallingUid();
                     new Thread() {
                         public void run() {
-                            groupChatSession.acceptSession();
+                            groupChatSession.acceptSession(callingUid);
                         }
                     }.start();
                 }
@@ -1327,5 +1331,19 @@ public class FileTransferServiceImpl extends IFileTransferService.Stub {
         mMessagingLog.setFileTransferStateAndReasonCode(fileTransferId, state, reasonCode);
         mGroupFileTransferBroadcaster.broadcastStateChanged(chatId, fileTransferId, state,
                 reasonCode);
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

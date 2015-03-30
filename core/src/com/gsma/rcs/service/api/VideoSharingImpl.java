@@ -26,6 +26,7 @@ import com.gsma.rcs.core.content.MmContent;
 import com.gsma.rcs.core.content.VideoContent;
 import com.gsma.rcs.core.ims.protocol.sip.SipDialogPath;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.richcall.ContentSharingError;
 import com.gsma.rcs.core.ims.service.richcall.RichcallService;
 import com.gsma.rcs.core.ims.service.richcall.video.VideoSharingPersistedStorageAccessor;
@@ -43,6 +44,8 @@ import com.gsma.services.rcs.sharing.video.VideoDescriptor;
 import com.gsma.services.rcs.sharing.video.VideoSharing;
 import com.gsma.services.rcs.sharing.video.VideoSharing.ReasonCode;
 import com.gsma.services.rcs.sharing.video.VideoSharing.State;
+
+import android.os.Binder;
 
 import javax2.sip.message.Response;
 
@@ -240,9 +243,10 @@ public class VideoSharingImpl extends IVideoSharing.Stub implements VideoStreami
         session.setPlayer(player);
 
         // Accept invitation
+        final Integer callingUid = Binder.getCallingUid();
         new Thread() {
             public void run() {
-                session.acceptSession();
+                session.acceptSession(callingUid);
             }
         }.start();
     }
@@ -525,5 +529,19 @@ public class VideoSharingImpl extends IVideoSharing.Stub implements VideoStreami
             setStateAndReasonCodeAndDurationAndBroadcast(contact, currentDuration,
                     VideoSharing.State.RINGING, ReasonCode.UNSPECIFIED);
         }
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

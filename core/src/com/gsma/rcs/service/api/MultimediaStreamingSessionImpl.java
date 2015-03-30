@@ -24,6 +24,7 @@ package com.gsma.rcs.service.api;
 
 import com.gsma.rcs.core.ims.protocol.sip.SipDialogPath;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.sip.SipService;
 import com.gsma.rcs.core.ims.service.sip.SipSessionError;
 import com.gsma.rcs.core.ims.service.sip.SipSessionListener;
@@ -37,6 +38,7 @@ import com.gsma.services.rcs.extension.MultimediaSession.ReasonCode;
 import com.gsma.services.rcs.extension.MultimediaSession.State;
 
 import android.content.Intent;
+import android.os.Binder;
 
 import javax2.sip.message.Response;
 
@@ -218,8 +220,9 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
      * Accepts session invitation
      * 
      * @throws ServerApiException
+     * @throws ServerPermissionDeniedException 
      */
-    public void acceptInvitation() throws ServerApiException {
+    public void acceptInvitation() throws ServerApiException, ServerPermissionDeniedException {
         if (logger.isActivated()) {
             logger.info("Accept session invitation");
         }
@@ -233,7 +236,7 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
         }
 
         // Test security extension
-        ServerApiUtils.testApiExtensionPermission(session.getServiceId());
+        ServerApiUtils.assertExtensionIsAuthorized(Binder.getCallingUid(), session.getServiceId());
 
         // Accept invitation
         new Thread() {
@@ -247,8 +250,9 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
      * Rejects session invitation
      * 
      * @throws ServerApiException
+     * @throws ServerPermissionDeniedException 
      */
-    public void rejectInvitation() throws ServerApiException {
+    public void rejectInvitation() throws ServerApiException, ServerPermissionDeniedException {
         if (logger.isActivated()) {
             logger.info("Reject session invitation");
         }
@@ -262,7 +266,7 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
         }
 
         // Test security extension
-        ServerApiUtils.testApiExtensionPermission(session.getServiceId());
+        ServerApiUtils.assertExtensionIsAuthorized(Binder.getCallingUid(), session.getServiceId());
 
         // Reject invitation
         new Thread() {
@@ -276,8 +280,9 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
      * Aborts the session
      * 
      * @throws ServerApiException
+     * @throws ServerPermissionDeniedException 
      */
-    public void abortSession() throws ServerApiException {
+    public void abortSession() throws ServerApiException, ServerPermissionDeniedException {
         if (logger.isActivated()) {
             logger.info("Cancel session");
         }
@@ -291,7 +296,7 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
         }
 
         // Test security extension
-        ServerApiUtils.testApiExtensionPermission(session.getServiceId());
+        ServerApiUtils.assertExtensionIsAuthorized(Binder.getCallingUid(), session.getServiceId());
 
         // Abort the session
         new Thread() {
@@ -306,8 +311,9 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
      * 
      * @param content Payload content
      * @throws ServerApiException
+     * @throws ServerPermissionDeniedException 
      */
-    public void sendPayload(byte[] content) throws ServerApiException {
+    public void sendPayload(byte[] content) throws ServerApiException, ServerPermissionDeniedException {
         GenericSipRtpSession session = mSipService.getGenericSipRtpSession(mSessionId);
         if (session == null) {
             /*
@@ -318,7 +324,7 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
         }
 
         // Test security extension
-        ServerApiUtils.testApiExtensionPermission(session.getServiceId());
+        ServerApiUtils.assertExtensionIsAuthorized(Binder.getCallingUid(), session.getServiceId());
 
         /* TODO: This exception handling is not correct. Will be fixed CR037. */
         if (!session.sendPlayload(content)) {
@@ -464,5 +470,19 @@ public class MultimediaStreamingSessionImpl extends IMultimediaStreamingSession.
             mBroadcaster.broadcastStateChanged(contact, mSessionId, State.RINGING,
                     ReasonCode.UNSPECIFIED);
         }
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

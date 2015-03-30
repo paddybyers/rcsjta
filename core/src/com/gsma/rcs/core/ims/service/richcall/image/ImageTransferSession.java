@@ -36,6 +36,9 @@ import com.gsma.rcs.utils.StorageUtils;
 import com.gsma.rcs.utils.logger.Logger;
 import com.gsma.services.rcs.contact.ContactId;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Image sharing transfer session
  * 
@@ -83,6 +86,7 @@ public abstract class ImageTransferSession extends ContentSharingSession {
         super(parent, content, contact, rcsSettings, timestamp);
 
         mThumbnail = thumbnail;
+        setFeatureTags(Arrays.asList(RichcallService.FEATURE_TAGS_IMAGE_SHARE));
     }
 
     /**
@@ -120,12 +124,11 @@ public abstract class ImageTransferSession extends ContentSharingSession {
     public SipRequest createInvite() throws SipException {
 
         if (mThumbnail != null) {
-            return SipMessageFactory.createMultipartInvite(getDialogPath(),
-                    RichcallService.FEATURE_TAGS_IMAGE_SHARE, getDialogPath().getLocalContent(),
-                    BOUNDARY_TAG);
+            return SipMessageFactory.createMultipartInvite(getDialogPath(), getFeatureTags(),
+                    getDialogPath().getLocalContent(), BOUNDARY_TAG);
         } else {
-            return SipMessageFactory.createInvite(getDialogPath(),
-                    RichcallService.FEATURE_TAGS_IMAGE_SHARE, getDialogPath().getLocalContent());
+            return SipMessageFactory.createInvite(getDialogPath(), getFeatureTags(),
+                    getDialogPath().getLocalContent());
         }
     }
 

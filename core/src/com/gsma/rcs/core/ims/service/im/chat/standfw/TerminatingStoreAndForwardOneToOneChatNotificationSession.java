@@ -198,7 +198,7 @@ public class TerminatingStoreAndForwardOneToOneChatNotificationSession extends O
                 sLogger.info("Send 200 OK");
             }
             SipResponse resp = SipMessageFactory.create200OkInviteResponse(getDialogPath(),
-                    InstantMessagingService.CHAT_FEATURE_TAGS, sdp);
+                    getFeatureTags(), sdp);
 
             // The signalisation is established
             getDialogPath().sigEstablished();

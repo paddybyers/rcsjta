@@ -25,9 +25,10 @@ package com.gsma.rcs.provisioning.https;
 import static com.gsma.rcs.utils.StringUtils.UTF8;
 
 import com.gsma.rcs.core.TerminalInfo;
+import com.gsma.rcs.core.ims.service.extension.CertificateProvisioning;
 import com.gsma.rcs.provider.LocalContentResolver;
-import com.gsma.rcs.provider.messaging.MessagingLog;
-import com.gsma.rcs.provider.settings.RcsSettings;
+import com.gsma.rcs.provider.security.SecurityLog;
+import com.gsma.rcs.provider.messaging.MessagingLog;import com.gsma.rcs.provider.settings.RcsSettings;
 import com.gsma.rcs.provider.settings.RcsSettingsData.GsmaRelease;
 import com.gsma.rcs.provisioning.ProvisioningFailureReasons;
 import com.gsma.rcs.provisioning.ProvisioningInfo;
@@ -822,7 +823,10 @@ public class HttpsProvisioningManager {
                 }
 
                 // Parse the received content
-                ProvisioningParser parser = new ProvisioningParser(result.content, mRcsSettings);
+                SecurityLog.createInstance(mLocalContentResolver);
+                SecurityLog securityLog = SecurityLog.getInstance();
+                ProvisioningParser parser = new ProvisioningParser(result.content, mRcsSettings, 
+                        new CertificateProvisioning(securityLog));
 
                 // Save GSMA release set into the provider
                 GsmaRelease gsmaRelease = mRcsSettings.getGsmaRelease();

@@ -24,6 +24,7 @@ package com.gsma.rcs.service.api;
 
 import com.gsma.rcs.core.ims.network.sip.FeatureTags;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.sip.SipService;
 import com.gsma.rcs.core.ims.service.sip.messaging.GenericSipMsrpSession;
 import com.gsma.rcs.core.ims.service.sip.streaming.GenericSipRtpSession;
@@ -52,6 +53,7 @@ import com.gsma.services.rcs.extension.MultimediaSession.ReasonCode;
 import com.gsma.services.rcs.extension.MultimediaStreamingSessionIntent;
 
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 
 import java.util.ArrayList;
@@ -330,9 +332,10 @@ public class MultimediaSessionServiceImpl extends IMultimediaSessionService.Stub
      * @param contact Contact ID
      * @return Multimedia messaging session
      * @throws ServerApiException
+     * @throws ServerPermissionDeniedException 
      */
     public IMultimediaMessagingSession initiateMessagingSession(String serviceId, ContactId contact)
-            throws ServerApiException {
+            throws ServerApiException, ServerPermissionDeniedException {
         if (logger.isActivated()) {
             logger.info("Initiate a multimedia messaging session with " + contact);
         }
@@ -341,7 +344,7 @@ public class MultimediaSessionServiceImpl extends IMultimediaSessionService.Stub
         ServerApiUtils.testIms();
 
         // Test security extension
-        ServerApiUtils.testApiExtensionPermission(serviceId);
+        ServerApiUtils.assertExtensionIsAuthorized(Binder.getCallingUid(), serviceId);
 
         try {
             // Initiate a new session
@@ -440,9 +443,10 @@ public class MultimediaSessionServiceImpl extends IMultimediaSessionService.Stub
      * @param contact Contact ID
      * @return Multimedia streaming session
      * @throws ServerApiException
+     * @throws ServerPermissionDeniedException 
      */
     public IMultimediaStreamingSession initiateStreamingSession(String serviceId, ContactId contact)
-            throws ServerApiException {
+            throws ServerApiException, ServerPermissionDeniedException {
         if (logger.isActivated()) {
             logger.info("Initiate a multimedia streaming session with " + contact);
         }
@@ -451,7 +455,7 @@ public class MultimediaSessionServiceImpl extends IMultimediaSessionService.Stub
         ServerApiUtils.testIms();
 
         // Test security extension
-        ServerApiUtils.testApiExtensionPermission(serviceId);
+        ServerApiUtils.assertExtensionIsAuthorized(Binder.getCallingUid(), serviceId);
 
         try {
             // Initiate a new session
@@ -619,4 +623,18 @@ public class MultimediaSessionServiceImpl extends IMultimediaSessionService.Stub
     public ICommonServiceConfiguration getCommonConfiguration() {
         return new CommonServiceConfigurationImpl(mRcsSettings);
     }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
+    }    
 }

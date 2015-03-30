@@ -24,13 +24,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
 import com.gsma.services.rcs.RcsContactFormatException;
 import com.gsma.services.rcs.contact.ContactId;
 import com.gsma.services.rcs.contact.ContactUtil;
+
 import com.orangelabs.rcs.ri.R;
+import com.orangelabs.rcs.ri.extension.messaging.MessagingSessionUtils;
 import com.orangelabs.rcs.ri.utils.ContactListAdapter;
 import com.orangelabs.rcs.ri.utils.LogUtils;
 
@@ -46,6 +49,10 @@ public abstract class InitiateMultimediaSession extends Activity {
      */
     private Spinner mSpinner;
 
+    /**
+     * Spinner for serviceId (extension) selection
+     */
+    private Spinner mSpinnerServiceId;    
     /**
      * The log tag for this class
      */
@@ -63,6 +70,9 @@ public abstract class InitiateMultimediaSession extends Activity {
         // Set contact selector
         mSpinner = (Spinner) findViewById(R.id.contact);
         mSpinner.setAdapter(ContactListAdapter.createContactListAdapter(this));
+
+        mSpinnerServiceId = (Spinner) findViewById(R.id.extension);     
+        mSpinnerServiceId.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,MessagingSessionUtils.getServicesIds(this)));
 
         // Set buttons callback
         Button initiateBtn = (Button) findViewById(R.id.initiate_btn);
@@ -92,7 +102,7 @@ public abstract class InitiateMultimediaSession extends Activity {
                 ContactUtil contactUtil = ContactUtil.getInstance(InitiateMultimediaSession.this);
                 ContactId contact = contactUtil.formatContact(phoneNumber);
                 // Initiate session
-                initiateSession(contact);
+                initiateSession(contact,  mSpinnerServiceId.getSelectedItem().toString());
             } catch (RcsContactFormatException e) {
                 if (LogUtils.isActive) {
                     Log.e(LOGTAG, "Cannot parse contact " + phoneNumber);
@@ -108,6 +118,7 @@ public abstract class InitiateMultimediaSession extends Activity {
      * Initiate session
      * 
      * @param contact Remote contact
+     * @param serviceId 
      */
-    public abstract void initiateSession(ContactId contact);
+    public abstract void initiateSession(ContactId contact,  String serviceId);
 }

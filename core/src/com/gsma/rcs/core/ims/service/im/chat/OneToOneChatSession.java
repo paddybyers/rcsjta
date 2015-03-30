@@ -233,7 +233,7 @@ public abstract class OneToOneChatSession extends ChatSession {
      */
     private SipRequest createInviteRequest(String content) throws SipException {
         SipRequest invite = SipMessageFactory.createInvite(getDialogPath(),
-                InstantMessagingService.CHAT_FEATURE_TAGS, content);
+                getFeatureTags(), content);
 
         // Add a contribution ID header
         invite.addHeader(ChatUtils.HEADER_CONTRIBUTION_ID, getContributionID());

@@ -33,12 +33,15 @@ import com.gsma.rcs.core.ims.protocol.sip.SipResponse;
 import com.gsma.rcs.core.ims.protocol.sip.SipTransactionContext;
 import com.gsma.rcs.provider.eab.ContactsManager;
 import com.gsma.rcs.provider.settings.RcsSettings;
+import com.gsma.rcs.service.api.ServerApiUtils;
 import com.gsma.rcs.utils.ContactUtils;
 import com.gsma.rcs.utils.logger.Logger;
 import com.gsma.services.rcs.RcsContactFormatException;
 import com.gsma.services.rcs.contact.ContactId;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 
 import javax2.sip.header.ContactHeader;
@@ -148,7 +151,17 @@ public abstract class ImsServiceSession extends Thread {
     private boolean mSessionAccepted = false;
 
     protected final RcsSettings mRcsSettings;
+    
+    /**
+     * Feature tags
+     */
+    private List<String> mFeatureTags = new ArrayList<String>();
 
+    /**
+     * CallingUid : identify the client application bound to the API
+     */
+    private Integer mCallingUid;
+    
     /**
      * Session timestamp
      */
@@ -452,11 +465,20 @@ public abstract class ImsServiceSession extends Thread {
      * Accept the session invitation
      */
     public void acceptSession() {
+        acceptSession(null);
+    }
+    
+    /**
+     * Accept the session invitation
+     * 
+     * @param callingUid : identifier of the application bound to the APÏ
+     */
+    public void acceptSession(Integer callingUid) {
         if (sLogger.isActivated()) {
             sLogger.debug("Session invitation has been accepted");
         }
         mInvitationStatus = InvitationStatus.INVITATION_ACCEPTED;
-
+        setCallingUid(callingUid);
         // Unblock semaphore
         synchronized (mWaitUserAnswer) {
             mWaitUserAnswer.notifyAll();
@@ -1346,5 +1368,47 @@ public abstract class ImsServiceSession extends Thread {
      * @param response
      */
     public void handle180Ringing(SipResponse response) {
+    }
+
+    /**
+     * Get feature tags
+     * 
+     * @return Feature tags
+     */
+    protected String[] getFeatureTags() {
+        if (mCallingUid == null) {
+            return mFeatureTags.toArray(new String[mFeatureTags.size()]);
+        }    
+        
+        List<String> newFeaturesTags = new ArrayList<String>(mFeatureTags);
+        ServerApiUtils.addApplicationIdAsFeaturesTag(newFeaturesTags, mCallingUid);
+        return newFeaturesTags.toArray(new String[newFeaturesTags.size()]);
+    }
+
+    /**
+     * Set feature tags
+     * 
+     * @param tags Feature tags
+     */
+    protected void setFeatureTags(List<String> tags) {
+        mFeatureTags = tags;
+    }
+
+    /**
+     * Get the UID of the application bound to the API
+     * 
+     * @return UID or null when if there is no bound application to the API
+     */
+    protected Integer getCallingUid() {
+        return mCallingUid;
+    }
+
+    /**
+     * Set the UID of the application bound to the API
+     * 
+     * @param callingUid
+     */
+    public void setCallingUid(Integer callingUid) {
+        mCallingUid = callingUid;
     }
 }

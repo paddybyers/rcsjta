@@ -54,7 +54,12 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>            
+            <!-- Declare the joyn extension -->
+            <intent-filter>
+                <action android:name="com.gsma.services.rcs.capability.EXTENSION" />
+                <data android:mimeType="com.gsma.services.rcs/*" />
+            </intent-filter>            
         </activity>
         <activity
             android:name=".AboutRI"
@@ -407,10 +412,10 @@
 "
         <receiver android:name="com.orangelabs.rcs.ri.extension.SessionInvitationReceiver" >
             <intent-filter>
-                <action android:name="com.gsma.services.rcs.extension.action.NEW_MESSAGING_SESSION" />
-
+		    	<action android:name="com.gsma.services.rcs.extension.action.NEW_MESSAGING_SESSION" />
                 <data android:mimeType="com.gsma.services.rcs/ext.messaging" />
-
+                <data android:mimeType="com.gsma.services.rcs/mnc099.mcc099.messaging-range-ext1" />
+                <data android:mimeType="com.gsma.services.rcs/ext.u7wrtuFjps1tGIiqcrVRe89w1dnWCxmeMGvqKg" />      
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -433,6 +438,16 @@
         <activity
             android:name=".upload.InitiateFileUpload"
             android:label="@string/title_initiate_upload" />
+
+        <!-- Application Identifier -->
+         <meta-data
+            android:name="com.gsma.services.rcs.APPLICATION_ID"
+            android:value="mnc099.mcc099.messaging-range-ext0" />
+                
+        <!-- Extensions supported by application -->
+         <meta-data
+            android:name="com.gsma.services.rcs.capability.EXTENSION"
+            android:value="mnc099.mcc099.messaging-range-ext1;ext.u7wrtuFjps1tGIiqcrVRe89w1dnWCxmeMGvqKg" />
 
         <!-- RCS settings application -->
 

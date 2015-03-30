@@ -36,6 +36,9 @@ import com.gsma.rcs.utils.logger.Logger;
 import com.gsma.services.rcs.Geoloc;
 import com.gsma.services.rcs.contact.ContactId;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Geoloc sharing transfer session
  * 
@@ -72,9 +75,9 @@ public abstract class GeolocTransferSession extends ContentSharingSession {
      * @param rcsSettings
      * @param timestamp Local timestamp for the session
      */
-    public GeolocTransferSession(ImsService parent, MmContent content, ContactId contact,
-            RcsSettings rcsSettings, long timestamp) {
+    public GeolocTransferSession(ImsService parent, MmContent content, ContactId contact, RcsSettings rcsSettings, long timestamp) {
         super(parent, content, contact, rcsSettings, timestamp);
+        setFeatureTags(Arrays.asList(RichcallService.FEATURE_TAGS_GEOLOC_SHARE));
     }
 
     /**
@@ -118,8 +121,8 @@ public abstract class GeolocTransferSession extends ContentSharingSession {
      * @throws SipException
      */
     public SipRequest createInvite() throws SipException {
-        return SipMessageFactory.createInvite(getDialogPath(),
-                RichcallService.FEATURE_TAGS_GEOLOC_SHARE, getDialogPath().getLocalContent());
+        return SipMessageFactory.createInvite(getDialogPath(), getFeatureTags(), getDialogPath()
+                .getLocalContent());
     }
 
     /**

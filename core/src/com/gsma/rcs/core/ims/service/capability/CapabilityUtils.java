@@ -33,6 +33,7 @@ import com.gsma.rcs.core.ims.protocol.sdp.SdpParser;
 import com.gsma.rcs.core.ims.protocol.sdp.SdpUtils;
 import com.gsma.rcs.core.ims.protocol.sip.SipMessage;
 import com.gsma.rcs.core.ims.service.richcall.image.ImageTransferSession;
+import com.gsma.rcs.provider.security.SecurityLog;
 import com.gsma.rcs.provider.settings.RcsSettings;
 import com.gsma.rcs.utils.MimeManager;
 import com.gsma.rcs.utils.NetworkUtils;
@@ -139,12 +140,15 @@ public class CapabilityUtils {
 
         // Extensions
         if (rcsSettings.isExtensionsAllowed()) {
-            for (String extension : rcsSettings.getSupportedRcsExtensions()) {
-                StringBuilder sb = new StringBuilder(FeatureTags.FEATURE_RCSE_EXTENSION)
-                        .append(".").append(extension);
-                iariTags.add(sb.toString());
+            SecurityLog securityLog = SecurityLog.getInstance();
+            if (securityLog != null) {
+                for (String extension : securityLog.getSupportedExtensions()) {
+                    StringBuilder sb = new StringBuilder(FeatureTags.FEATURE_RCSE_EXTENSION)
+                            .append(".").append(extension);
+                    iariTags.add(sb.toString());
+                }
+                icsiTags.add(FeatureTags.FEATURE_3GPP_EXTENSION);
             }
-            icsiTags.add(FeatureTags.FEATURE_3GPP_EXTENSION);
         }
 
         // Add IARI prefix

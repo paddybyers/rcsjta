@@ -32,6 +32,7 @@ import com.gsma.rcs.core.content.MmContent;
 import com.gsma.rcs.core.content.VideoContent;
 import com.gsma.rcs.core.ims.ImsError;
 import com.gsma.rcs.core.ims.service.capability.Capabilities;
+import com.gsma.rcs.core.ims.service.extension.ExtensionManager;
 import com.gsma.rcs.core.ims.service.im.InstantMessagingService;
 import com.gsma.rcs.core.ims.service.im.chat.GroupChatAutoRejoinTask;
 import com.gsma.rcs.core.ims.service.im.chat.OneToOneChatSession;
@@ -58,6 +59,7 @@ import com.gsma.rcs.provider.eab.ContactsManager;
 import com.gsma.rcs.provider.history.HistoryLog;
 import com.gsma.rcs.provider.ipcall.IPCallHistory;
 import com.gsma.rcs.provider.messaging.MessagingLog;
+import com.gsma.rcs.provider.security.SecurityLog;
 import com.gsma.rcs.provider.settings.RcsSettings;
 import com.gsma.rcs.provider.sharing.RichCallHistory;
 import com.gsma.rcs.service.api.CapabilityServiceImpl;
@@ -212,6 +214,10 @@ public class RcsCoreService extends Service implements CoreListener {
 
     private ContactsManager mContactManager;
 
+    private SecurityLog mSecurityLog;
+    
+    private ExtensionManager mExtensionManager;
+
     /**
      * The logger
      */
@@ -294,11 +300,13 @@ public class RcsCoreService extends Service implements CoreListener {
             IPCallHistory.createInstance(mLocalContentResolver);
 
             HistoryLog.createInstance(mLocalContentResolver);
+            SecurityLog.createInstance(mLocalContentResolver);
             mContactManager = ContactsManager.getInstance();
             mHistoryLog = HistoryLog.getInstance();
-
-            // Create the core
-            Core.createCore(this, mRcsSettings, mContactManager, mMessagingLog);
+			mSecurityLog = SecurityLog.getInstance();
+            ExtensionManager.createInstance(mContext, mRcsSettings, mSecurityLog);
+            mExtensionManager = ExtensionManager.getInstance();            // Create the core
+            Core.createCore(this, mRcsSettings, mContactManager, mMessagingLog, mExtensionManager);
 
             // Instantiate API
             mContactApi = new ContactServiceImpl(mContactManager, mRcsSettings);

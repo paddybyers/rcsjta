@@ -182,6 +182,7 @@ public class OriginatingHttpFileSharingSession extends HttpFileTransferSession i
             try {
                 chatSession = mCore.getImService().initiateOneToOneChatSession(getRemoteContact(),
                         firstMsg);
+                    chatSession.setCallingUid(getCallingUid());
             } catch (CoreException e) {
                 if (logActivated) {
                     sLogger.debug("Couldn't initiate One to one session :" + e);

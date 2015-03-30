@@ -25,6 +25,7 @@ package com.gsma.rcs.core;
 import com.gsma.rcs.addressbook.AddressBookManager;
 import com.gsma.rcs.core.ims.ImsModule;
 import com.gsma.rcs.core.ims.service.capability.CapabilityService;
+import com.gsma.rcs.core.ims.service.extension.ExtensionManager;
 import com.gsma.rcs.core.ims.service.im.InstantMessagingService;
 import com.gsma.rcs.core.ims.service.ipcall.IPCallService;
 import com.gsma.rcs.core.ims.service.presence.PresenceService;
@@ -101,17 +102,18 @@ public class Core {
      * @param rcsSettings RcsSettings instance
      * @param messagingLog
      * @param contactsManager
+     * @param extensionManager 
      * @return Core instance
      * @throws CoreException
      */
     public static Core createCore(CoreListener listener, RcsSettings rcsSettings,
-            ContactsManager contactsManager, MessagingLog messagingLog) throws CoreException {
+            ContactsManager contactsManager, MessagingLog messagingLog, ExtensionManager extensionManager) throws CoreException {
         if (sInstance != null) {
             return sInstance;
         }
         synchronized (Core.class) {
             if (sInstance == null) {
-                sInstance = new Core(listener, rcsSettings, contactsManager, messagingLog);
+                sInstance = new Core(listener, rcsSettings, contactsManager, messagingLog, extensionManager);
             }
         }
         return sInstance;
@@ -137,7 +139,7 @@ public class Core {
      * @throws CoreException
      */
     private Core(CoreListener listener, RcsSettings rcsSettings, ContactsManager contactsManager,
-            MessagingLog messagingLog) throws CoreException {
+            MessagingLog messagingLog, ExtensionManager extensionManager) throws CoreException {
         boolean logActivated = logger.isActivated();
         if (logActivated) {
             logger.info("Terminal core initialization");
@@ -167,7 +169,7 @@ public class Core {
         mAddressBookManager = new AddressBookManager();
 
         // Create the IMS module
-        mImsModule = new ImsModule(this, mRcsSettings, contactsManager, messagingLog);
+        mImsModule = new ImsModule(this, mRcsSettings, contactsManager, messagingLog, extensionManager);
 
         if (logActivated) {
             logger.info("Terminal core is created with success");

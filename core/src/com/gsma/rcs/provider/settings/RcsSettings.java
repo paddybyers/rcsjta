@@ -22,20 +22,13 @@
 
 package com.gsma.rcs.provider.settings;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.text.TextUtils;
-
 import com.gsma.rcs.core.ims.service.capability.Capabilities;
-import com.gsma.rcs.core.ims.service.extension.ServiceExtensionManager;
-import com.gsma.rcs.provider.settings.RcsSettingsData;
+import com.gsma.rcs.provider.LocalContentResolver;
+import com.gsma.rcs.provider.security.SecurityLog;
 import com.gsma.rcs.provider.settings.RcsSettingsData.AuthenticationProcedure;
 import com.gsma.rcs.provider.settings.RcsSettingsData.ConfigurationMode;
 import com.gsma.rcs.provider.settings.RcsSettingsData.EnableRcseSwitch;
+import com.gsma.rcs.provider.settings.RcsSettingsData.ExtensionPolicy;
 import com.gsma.rcs.provider.settings.RcsSettingsData.FileTransferProtocol;
 import com.gsma.rcs.provider.settings.RcsSettingsData.GsmaRelease;
 import com.gsma.rcs.provider.settings.RcsSettingsData.ImSessionStartMode;
@@ -44,7 +37,14 @@ import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMethod;
 import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMode;
 import com.gsma.services.rcs.CommonServiceConfiguration.MinimumBatteryLevel;
 import com.gsma.services.rcs.filetransfer.FileTransferServiceConfiguration.ImageResizeOption;
-import com.gsma.rcs.provider.LocalContentResolver;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.text.TextUtils;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * RCS settings
@@ -701,7 +701,12 @@ public class RcsSettings {
         capabilities.setTimestampOfLastRequest(Capabilities.INVALID_TIMESTAMP);
         capabilities.setTimestampOfLastRefresh(System.currentTimeMillis());
         // Add extensions
-        capabilities.setSupportedExtensions(getSupportedRcsExtensions());
+        SecurityLog securityLog = SecurityLog.getInstance();
+        if (securityLog != null) {
+            capabilities.setSupportedExtensions(securityLog.getSupportedExtensions());
+        } else {
+            capabilities.setSupportedExtensions(new HashSet<String>());
+        }
         return capabilities;
     }
 
@@ -1429,26 +1434,6 @@ public class RcsSettings {
     }
 
     /**
-     * Get set of supported RCS extensions
-     *
-     * @return the set of extensions
-     */
-    public Set<String> getSupportedRcsExtensions() {
-        return ServiceExtensionManager
-                .getExtensions(readString(RcsSettingsData.CAPABILITY_RCS_EXTENSIONS));
-    }
-
-    /**
-     * Set the set of supported RCS extensions
-     *
-     * @param extensions Set of extensions
-     */
-    public void setSupportedRcsExtensions(Set<String> extensions) {
-        writeParameter(RcsSettingsData.CAPABILITY_RCS_EXTENSIONS,
-                ServiceExtensionManager.getExtensions(extensions));
-    }
-
-    /**
      * Is IM always-on thanks to the Store & Forward functionality
      *
      * @return Boolean
@@ -1980,6 +1965,25 @@ public class RcsSettings {
         return readBoolean(RcsSettingsData.ALLOW_EXTENSIONS);
     }
 
+    /**
+     * Returns the RCS extensions policy. 0: Only second party Extensions (MNO trusted applications)
+     * are authorized to access and use the RCS infrastructure. 1: Second-party Extensions and
+     * third-party Extensions are authorized to access the RCS infrastructure.
+     * 
+     * @return Integer
+     */
+    public ExtensionPolicy getExtensionspolicy() {
+        return ExtensionPolicy.valueOf(readInteger(RcsSettingsData.EXTENSIONS_POLICY));
+    }
+
+    /**
+     * @param extensionPolicy 
+     *
+     */
+    public void setExtensionspolicy(ExtensionPolicy extensionPolicy) {
+        writeInteger(RcsSettingsData.EXTENSIONS_POLICY, extensionPolicy.toInt());
+    }
+    
     /**
      * Get max lenght for extensions using real time messaging (MSRP)
      * 

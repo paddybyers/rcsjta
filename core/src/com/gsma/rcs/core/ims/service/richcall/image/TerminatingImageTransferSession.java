@@ -304,7 +304,7 @@ public class TerminatingImageTransferSession extends ImageTransferSession implem
                 logger.info("Send 200 OK");
             }
             SipResponse resp = SipMessageFactory.create200OkInviteResponse(getDialogPath(),
-                    RichcallService.FEATURE_TAGS_IMAGE_SHARE, sdp);
+                    getFeatureTags(), sdp);
 
             // The signalisation is established
             getDialogPath().sigEstablished();

@@ -27,6 +27,7 @@ import com.gsma.rcs.core.CoreListener;
 import com.gsma.rcs.core.ims.protocol.sip.SipDialogPath;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
 import com.gsma.rcs.core.ims.service.capability.Capabilities;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.im.InstantMessagingService;
 import com.gsma.rcs.core.ims.service.im.chat.ChatError;
 import com.gsma.rcs.core.ims.service.im.chat.ChatMessage;
@@ -59,6 +60,7 @@ import com.gsma.services.rcs.chat.IGroupChat;
 import com.gsma.services.rcs.contact.ContactId;
 
 import android.database.SQLException;
+import android.os.Binder;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -779,9 +781,10 @@ public class GroupChatImpl extends IGroupChat.Stub implements GroupChatSessionLi
         if (logger.isActivated()) {
             logger.debug("Core chat session is pending: auto accept it.");
         }
+        final Integer callingUid = Binder.getCallingUid();
         new Thread() {
             public void run() {
-                groupChatSession.acceptSession();
+                groupChatSession.acceptSession(callingUid);
             }
         }.start();
     }
@@ -939,7 +942,7 @@ public class GroupChatImpl extends IGroupChat.Stub implements GroupChatSessionLi
                 if (logger.isActivated()) {
                     logger.debug("Core chat session is pending: auto accept it.");
                 }
-                session.acceptSession();
+                session.acceptSession(Binder.getCallingUid());
                 break;
             default:
                 break;
@@ -1046,7 +1049,7 @@ public class GroupChatImpl extends IGroupChat.Stub implements GroupChatSessionLi
                 if (logger.isActivated()) {
                     logger.debug("Core chat session is pending: auto accept it, as IM_SESSION_START mode = 0");
                 }
-                session.acceptSession();
+                session.acceptSession(Binder.getCallingUid());
             }
         } catch (Exception e) {
             if (logger.isActivated()) {
@@ -1476,5 +1479,19 @@ public class GroupChatImpl extends IGroupChat.Stub implements GroupChatSessionLi
 
             mBroadcaster.broadcastParticipantStatusChanged(mChatId, contact, status);
         }
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

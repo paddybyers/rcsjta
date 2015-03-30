@@ -16,8 +16,11 @@
 
 package com.gsma.rcs.service.api;
 
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.services.rcs.chat.IChatMessage;
 import com.gsma.services.rcs.contact.ContactId;
+
+import android.os.Binder;
 
 public class ChatMessageImpl extends IChatMessage.Stub {
 
@@ -82,5 +85,19 @@ public class ChatMessageImpl extends IChatMessage.Stub {
 
     public boolean isRead() {
         return mPersistentStorage.isRead();
+    }
+
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

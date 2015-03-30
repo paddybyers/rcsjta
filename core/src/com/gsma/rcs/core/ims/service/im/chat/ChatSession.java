@@ -100,11 +100,6 @@ public abstract class ChatSession extends ImsServiceSession implements MsrpEvent
     /**
      * Feature tags
      */
-    private List<String> mFeatureTags = new ArrayList<String>();
-
-    /**
-     * Feature tags
-     */
     private List<String> mAcceptContactTags = new ArrayList<String>();
 
     /**
@@ -183,30 +178,12 @@ public abstract class ChatSession extends ImsServiceSession implements MsrpEvent
     }
 
     /**
-     * Get feature tags
-     * 
-     * @return Feature tags
-     */
-    public String[] getFeatureTags() {
-        return mFeatureTags.toArray(new String[mFeatureTags.size()]);
-    }
-
-    /**
      * Get Accept-Contact tags
      * 
      * @return Feature tags
      */
     public String[] getAcceptContactTags() {
         return mAcceptContactTags.toArray(new String[mAcceptContactTags.size()]);
-    }
-
-    /**
-     * Set feature tags
-     * 
-     * @param tags Feature tags
-     */
-    public void setFeatureTags(List<String> tags) {
-        this.mFeatureTags = tags;
     }
 
     /**

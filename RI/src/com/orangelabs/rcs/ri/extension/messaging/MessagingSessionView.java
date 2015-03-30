@@ -91,6 +91,12 @@ public class MessagingSessionView extends Activity {
     public final static String EXTRA_CONTACT = "contact";
 
     /**
+     * Intent parameter: serviceId
+     */
+
+    public final static String EXTRA_SERVICE_ID = "serviceId";
+
+    /**
      * UI handler
      */
     private final Handler handler = new Handler();
@@ -108,7 +114,7 @@ public class MessagingSessionView extends Activity {
     /**
      * Service ID
      */
-    private String serviceId = MessagingSessionUtils.SERVICE_ID;
+    private String serviceId;
 
     /**
      * Session
@@ -329,7 +335,7 @@ public class MessagingSessionView extends Activity {
 
                 // Get remote contact
                 contact = getIntent().getParcelableExtra(MessagingSessionView.EXTRA_CONTACT);
-
+                serviceId = getIntent().getStringExtra(MessagingSessionView.EXTRA_SERVICE_ID);
                 // Initiate session
                 startSession();
             } else {
@@ -350,6 +356,7 @@ public class MessagingSessionView extends Activity {
 
                     // Get remote contact
                     contact = session.getRemoteContact();
+                    serviceId = session.getServiceId();
                 } else {
                     // Incoming session from its Intent
                     sessionId = getIntent().getStringExtra(
@@ -366,6 +373,7 @@ public class MessagingSessionView extends Activity {
 
                     // Get remote contact
                     contact = session.getRemoteContact();
+                    serviceId = session.getServiceId();
                     String from = RcsDisplayName.getInstance(this).getDisplayName(contact);
 
                     // Manual accept

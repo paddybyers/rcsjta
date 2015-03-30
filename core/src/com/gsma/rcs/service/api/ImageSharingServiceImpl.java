@@ -25,6 +25,7 @@ package com.gsma.rcs.service.api;
 import com.gsma.rcs.core.content.ContentManager;
 import com.gsma.rcs.core.content.MmContent;
 import com.gsma.rcs.core.ims.service.SessionIdGenerator;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.richcall.RichcallService;
 import com.gsma.rcs.core.ims.service.richcall.image.ImageSharingPersistedStorageAccessor;
 import com.gsma.rcs.core.ims.service.richcall.image.ImageTransferSession;
@@ -51,6 +52,7 @@ import com.gsma.services.rcs.sharing.image.ImageSharing;
 import com.gsma.services.rcs.sharing.image.ImageSharing.ReasonCode;
 
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 
 import java.util.ArrayList;
@@ -277,7 +279,7 @@ public class ImageSharingServiceImpl extends IImageSharingService.Stub {
             long timestamp = System.currentTimeMillis();
             final ImageTransferSession session = mRichcallService.initiateImageSharingSession(
                     contact, content, null, timestamp);
-
+            session.setCallingUid(Binder.getCallingUid());
             String sharingId = session.getSessionID();
             mRichCallLog.addImageSharing(session.getSessionID(), contact, Direction.OUTGOING,
                     session.getContent(), ImageSharing.State.INITIATING, ReasonCode.UNSPECIFIED,
@@ -447,5 +449,19 @@ public class ImageSharingServiceImpl extends IImageSharingService.Stub {
      */
     public ICommonServiceConfiguration getCommonConfiguration() {
         return new CommonServiceConfigurationImpl(mRcsSettings);
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

@@ -71,7 +71,11 @@ public abstract class ImsService {
         /**
          * SIP service
          */
-        SIP
+        SIP,
+        /**
+         * System service
+         */
+        SYSTEM_SERVICE        
     };
 
     /**

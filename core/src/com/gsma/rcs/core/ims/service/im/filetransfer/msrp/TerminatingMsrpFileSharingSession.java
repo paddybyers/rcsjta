@@ -359,7 +359,7 @@ public class TerminatingMsrpFileSharingSession extends ImsFileSharingSession imp
                 logger.info("Send 200 OK");
             }
             SipResponse resp = SipMessageFactory.create200OkInviteResponse(getDialogPath(),
-                    InstantMessagingService.FT_FEATURE_TAGS, sdp);
+                    getFeatureTags(), sdp);
 
             // The signalisation is established
             getDialogPath().sigEstablished();

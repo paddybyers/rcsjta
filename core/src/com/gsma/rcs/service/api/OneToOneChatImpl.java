@@ -25,6 +25,7 @@ package com.gsma.rcs.service.api;
 import com.gsma.rcs.core.Core;
 import com.gsma.rcs.core.ims.service.ImsServiceSession.TerminationReason;
 import com.gsma.rcs.core.ims.service.capability.Capabilities;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.im.InstantMessagingService;
 import com.gsma.rcs.core.ims.service.im.chat.ChatError;
 import com.gsma.rcs.core.ims.service.im.chat.ChatMessage;
@@ -48,6 +49,8 @@ import com.gsma.services.rcs.chat.ChatLog.Message.MimeType;
 import com.gsma.services.rcs.chat.IChatMessage;
 import com.gsma.services.rcs.chat.IOneToOneChat;
 import com.gsma.services.rcs.contact.ContactId;
+
+import android.os.Binder;
 
 /**
  * One-to-One Chat implementation
@@ -125,6 +128,7 @@ public class OneToOneChatImpl extends IOneToOneChat.Stub implements OneToOneChat
         try {
             final OneToOneChatSession newSession = mImService.initiateOneToOneChatSession(mContact,
                     msg);
+            newSession.setCallingUid(Binder.getCallingUid());
             newSession.addListener(this);
             mChatService.addOneToOneChat(mContact, this);
             newSession.startSession();
@@ -147,7 +151,7 @@ public class OneToOneChatImpl extends IOneToOneChat.Stub implements OneToOneChat
         if (logger.isActivated()) {
             logger.debug("Accept one-to-one chat session with contact ".concat(mContact.toString()));
         }
-        session.acceptSession();
+        session.acceptSession(Binder.getCallingUid());
     }
 
     /**
@@ -504,7 +508,7 @@ public class OneToOneChatImpl extends IOneToOneChat.Stub implements OneToOneChat
                 if (logger.isActivated()) {
                     logger.debug("Core chat session is pending: auto accept it.");
                 }
-                session.acceptSession();
+                session.acceptSession(Binder.getCallingUid());
                 break;
             default:
                 break;
@@ -545,7 +549,7 @@ public class OneToOneChatImpl extends IOneToOneChat.Stub implements OneToOneChat
                     if (logger.isActivated()) {
                         logger.debug("Core chat session is pending: auto accept it, as IM_SESSION_START mode = 0");
                     }
-                    session.acceptSession();
+                    session.acceptSession(Binder.getCallingUid());
                 }
             }
         } catch (Exception e) {
@@ -846,5 +850,19 @@ public class OneToOneChatImpl extends IOneToOneChat.Stub implements OneToOneChat
     @Override
     public void handleSessionAutoAccepted(ContactId contact) {
         /* Not used by one-to-one chat */
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

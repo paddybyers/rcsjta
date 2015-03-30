@@ -28,6 +28,7 @@ import com.gsma.rcs.core.content.GeolocContent;
 import com.gsma.rcs.core.content.MmContent;
 import com.gsma.rcs.core.ims.ImsModule;
 import com.gsma.rcs.core.ims.service.SessionIdGenerator;
+import com.gsma.rcs.core.ims.service.extension.Extension;
 import com.gsma.rcs.core.ims.service.im.chat.ChatUtils;
 import com.gsma.rcs.core.ims.service.richcall.RichcallService;
 import com.gsma.rcs.core.ims.service.richcall.geoloc.GeolocSharingPersistedStorageAccessor;
@@ -54,6 +55,7 @@ import com.gsma.services.rcs.sharing.geoloc.IGeolocSharing;
 import com.gsma.services.rcs.sharing.geoloc.IGeolocSharingListener;
 import com.gsma.services.rcs.sharing.geoloc.IGeolocSharingService;
 
+import android.os.Binder;
 import android.os.IBinder;
 
 import java.util.ArrayList;
@@ -280,6 +282,7 @@ public class GeolocSharingServiceImpl extends IGeolocSharingService.Stub {
             // Initiate a sharing session
             final GeolocTransferSession session = mRichcallService.initiateGeolocSharingSession(
                     contact, content, geoloc, timestamp);
+            session.setCallingUid(Binder.getCallingUid());
             String sharingId = session.getSessionID();
             mRichcallLog.addOutgoingGeolocSharing(contact, sharingId, geoloc, State.INITIATING,
                     ReasonCode.UNSPECIFIED, timestamp);
@@ -449,5 +452,19 @@ public class GeolocSharingServiceImpl extends IGeolocSharingService.Stub {
      */
     public void deleteGeolocSharing(String sharingId) {
         throw new UnsupportedOperationException("This method has not been implemented yet!");
+    }
+    
+    /**
+     * Override the onTransact Binder method. It is used to check authorization for an application
+     * before calling API method. Control of authorization is made for third party applications (vs.
+     * native application) by comparing the client application fingerprint with the RCS application
+     * fingerprint
+     */
+    @Override
+    public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags)
+            throws android.os.RemoteException {
+        ServerApiUtils.assertApiIsAuthorized(Binder.getCallingUid(), Extension.Type.APPLICATION_ID);
+        return super.onTransact(code, data, reply, flags);
+
     }
 }

@@ -224,7 +224,7 @@ public class TerminatingVideoStreamingSession extends VideoStreamingSession {
                 logger.info("Send 200 OK");
             }
             SipResponse resp = SipMessageFactory.create200OkInviteResponse(dialogPath,
-                    RichcallService.FEATURE_TAGS_VIDEO_SHARE, sdp);
+                    getFeatureTags(), sdp);
 
             // The signalisation is established
             dialogPath.sigEstablished();

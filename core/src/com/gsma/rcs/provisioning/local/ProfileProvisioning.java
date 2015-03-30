@@ -25,7 +25,9 @@ import static com.gsma.rcs.provisioning.local.Provisioning.setEditTextParam;
 import static com.gsma.rcs.provisioning.local.Provisioning.setSpinnerParameter;
 
 import com.gsma.rcs.R;
+import com.gsma.rcs.core.ims.service.extension.CertificateProvisioning;
 import com.gsma.rcs.provider.LocalContentResolver;
+import com.gsma.rcs.provider.security.SecurityLog;
 import com.gsma.rcs.provider.settings.RcsSettings;
 import com.gsma.rcs.provider.settings.RcsSettingsData;
 import com.gsma.rcs.provider.settings.RcsSettingsData.AuthenticationProcedure;
@@ -37,6 +39,7 @@ import com.gsma.services.rcs.CommonServiceConfiguration.MessagingMode;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -417,7 +420,14 @@ public class ProfileProvisioning extends Activity {
          * @return true if loading the provisioning is successful
          */
         private boolean createProvisioning(String mXMLFileContent, String userPhoneNumber) {
-            ProvisioningParser parser = new ProvisioningParser(mXMLFileContent, mRcsSettings);
+            ContentResolver contentResolver = getContentResolver();
+            LocalContentResolver localContentResolver = new LocalContentResolver(contentResolver);
+
+            SecurityLog.createInstance(localContentResolver);
+            SecurityLog securityLog = SecurityLog.getInstance();
+            ProvisioningParser parser = new ProvisioningParser(mXMLFileContent, mRcsSettings,
+                    new CertificateProvisioning(securityLog));
+            
             // Save GSMA release set into the provider
             GsmaRelease release = mRcsSettings.getGsmaRelease();
             // Save client Messaging Mode set into the provider
